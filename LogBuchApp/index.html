@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogBuch</title>
+<!-- ===== PWA / iPhone (Home-Bildschirm-App) ===== -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LogBuch">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f4a68">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
+}
+</script>
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPgogIDxkZWZzPgogICAgPCEtLSBIaW50ZXJncnVuZCBkZXMgQ2FudmFzIC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmMmY2ZmIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTNlY2Y2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgoKICAgIDwhLS0gR2xhcy1HcnVuZGZsYWVjaGUgLS0+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImdsYXNzIiBjeD0iMC4zNSIgY3k9IjAuMjgiIHI9IjAuOTUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC44NSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNDUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC40MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkZmU5ZjUiIHN0b3Atb3BhY2l0eT0iMC41NSIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KCiAgICA8IS0tIFNwZWt1bGFyZXIgR2xhbnogb2JlbiBsaW5rcyAtLT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ic3BlYyIgeDE9IjAiIHkxPSIwIiB4Mj0iMC44IiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjkiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC4xNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KCiAgICA8IS0tIFNjaGxhZ3NjaGF0dGVuIC0tPgogICAgPGZpbHRlciBpZD0ic29mdCIgeD0iLTQwJSIgeT0iLTQwJSIgd2lkdGg9IjE4MCUiIGhlaWdodD0iMTgwJSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSIxOCIgc3RkRGV2aWF0aW9uPSIyOCIgZmxvb2QtY29sb3I9IiMzZDVhODAiIGZsb29kLW9wYWNpdHk9IjAuMjgiLz4KICAgIDwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0iYmx1ckJsb2IiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQ2Ii8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJibHVyU20iPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYiLz48L2ZpbHRlcj4KCiAgICA8IS0tIEthdGVnb3JpZWZhcmJlbiAtLT4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ0dyZWVuIiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNGFkZTgwIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTZhMzRhIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnUmVkIiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjg3MTcxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGMyNjI2Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnWWVsbG93IiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmRlMDQ3Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZWFiMzA4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnQmx1ZSIgY3g9IjAuMzUiIGN5PSIwLjMiIHI9IjAuOSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzYwYTVmYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYm9vayIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkYmU3ZjMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJvb2tTcGluZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiOWNjZTAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4ZmE5YzQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgoKICA8IS0tIEhpbnRlcmdydW5kIC0tPgogIDxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHJ4PSIxMjAiIGZpbGw9InVybCgjYmcpIi8+CgogIDwhLS0gPT09PT0gS3JlaXMtTG9nbyA9PT09PSAtLT4KICA8ZyBmaWx0ZXI9InVybCgjc29mdCkiPgogICAgPCEtLSBHbGFzLUtyZWlzIC0tPgogICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMzAiIGZpbGw9InVybCgjZ2xhc3MpIi8+CiAgICA8IS0tIEZhcmItQmxvYnMgaGludGVyIEdsYXMgKEdsYXNzbW9ycGhpc20pIC0tPgogICAgPGcgY2xpcC1wYXRoPSJjaXJjbGUoMzMwcHggYXQgNTEyIDQ1MikiPgogICAgICA8Y2lyY2xlIGN4PSIzODAiIGN5PSIzMzAiIHI9IjE1MCIgZmlsbD0iIzIyYzU1ZSIgb3BhY2l0eT0iMC41NSIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSI2NTAiIGN5PSIzMDAiIHI9IjE0MCIgZmlsbD0iI2VmNDQ0NCIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSI2NjAiIGN5PSI2MDAiIHI9IjE1MCIgZmlsbD0iI2ZhY2MxNSIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSI2MTAiIHI9IjE0NSIgZmlsbD0iIzNiODJmNiIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8IS0tIEZyb3N0ZWQgT3ZlcmxheSAtLT4KICAgICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMzAiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuMzAiLz4KICAgICAgPCEtLSBTcGVrdWxhcmVyIEdsYW56IC0tPgogICAgICA8ZWxsaXBzZSBjeD0iNDMwIiBjeT0iMzAwIiByeD0iMjMwIiByeT0iMTIwIiBmaWxsPSJ1cmwoI3NwZWMpIiBmaWx0ZXI9InVybCgjYmx1clNtKSIvPgogICAgPC9nPgogICAgPCEtLSBHbGFzLVJhbmQgLS0+CiAgICA8Y2lyY2xlIGN4PSI1MTIiIGN5PSI0NTIiIHI9IjMzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC44NSIgc3Ryb2tlLXdpZHRoPSIxMCIvPgogICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMzUiIHN0cm9rZS13aWR0aD0iMyIvPgogIDwvZz4KCiAgPCEtLSA9PT09PSBTeW1ib2w6IE5vdGl6YnVjaCBtaXQgU3ByZWNoYmxhc2UgPT09PT0gLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTEyIDQ1MikiPgogICAgPCEtLSBOb3RpemJ1Y2ggLS0+CiAgICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgtNikiPgogICAgICA8cmVjdCB4PSItMTUwIiB5PSItMTA1IiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjIzMCIgcng9IjI2IiBmaWxsPSJ1cmwoI2Jvb2spIiBzdHJva2U9IiM5ZGI0Y2MiIHN0cm9rZS13aWR0aD0iNSIvPgogICAgICA8cmVjdCB4PSItMTUwIiB5PSItMTA1IiB3aWR0aD0iMzQiIGhlaWdodD0iMjMwIiByeD0iMTYiIGZpbGw9InVybCgjYm9va1NwaW5lKSIvPgogICAgICA8ZyBzdHJva2U9IiNjM2QzZTQiIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iLTUyIiB4Mj0iNzYiIHkyPSItNTIiLz4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iLTE0IiB4Mj0iNzYiIHkyPSItMTQiLz4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iMjQiIHgyPSI0OCIgeTI9IjI0Ii8+CiAgICAgICAgPGxpbmUgeDE9Ii05MiIgeTE9IjYyIiB4Mj0iNzYiIHkyPSI2MiIvPgogICAgICA8L2c+CiAgICA8L2c+CiAgICA8IS0tIFNwcmVjaGJsYXNlIC0tPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODggLTkyKSI+CiAgICAgIDxwYXRoIGQ9Ik0gLTc4IC01MiBoMTU2IGEyNCAyNCAwIDAgMSAyNCAyNCB2NTIgYTI0IDI0IDAgMCAxIC0yNCAyNCBoLTk2IGwtMzggMzQgdi0zNCBoLTIyIGEyNCAyNCAwIDAgMSAtMjQgLTI0IHYtNTIgYTI0IDI0IDAgMCAxIDI0IC0yNCB6IgogICAgICAgICAgICBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuOTIiIHN0cm9rZT0iIzhmYTljNCIgc3Ryb2tlLXdpZHRoPSI1Ii8+CiAgICAgIDwhLS0gNCBLYXRlZ29yaWVucHVua3RlIC0tPgogICAgICA8Y2lyY2xlIGN4PSItNDIiIGN5PSIwIiByPSIxNyIgZmlsbD0idXJsKCNnR3JlZW4pIi8+CiAgICAgIDxjaXJjbGUgY3g9Ii0yIiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dSZWQpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjM4IiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dZZWxsb3cpIi8+CiAgICAgIDxjaXJjbGUgY3g9Ijc4IiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dCbHVlKSIvPgogICAgPC9nPgogIDwvZz4KCiAgPCEtLSA9PT09PSBTY2hyaWZ0enVnID09PT09IC0tPgogIDx0ZXh0IHg9IjYyNS40IiB5PSI5MDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgICAgZm9udC1mYW1pbHk9Ill1IEdvdGhpYywgU2Vnb2UgVUksIERlamFWdSBTYW5zLCBzYW5zLXNlcmlmIgogICAgICAgIGZvbnQtc2l6ZT0iMTA2IiBmb250LXdlaWdodD0iODAwIiBsZXR0ZXItc3BhY2luZz0iMiI+CiAgICA8dHNwYW4gZmlsbD0iIzE2YTM0YSI+TDwvdHNwYW4+PHRzcGFuIGZpbGw9IiMyZjRhNjgiPm9nPC90c3Bhbj48dHNwYW4gZmlsbD0iI2VhYjMwOCI+QjwvdHNwYW4+PHRzcGFuIGZpbGw9IiMyZjRhNjgiPnVjaDwvdHNwYW4+PHRzcGFuIGR4PSI1NSI+IDwvdHNwYW4+PHRzcGFuIGZpbGw9IiMxMTE4MjciIGZvbnQtc2l6ZT0iNTMiPkhBUkJJPC90c3Bhbj4KICA8L3RleHQ+CiAgPHRleHQgeD0iNTEyIiB5PSI5ODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgICAgZm9udC1mYW1pbHk9Ill1IEdvdGhpYywgU2Vnb2UgVUksIERlamFWdSBTYW5zLCBzYW5zLXNlcmlmIgogICAgICAgIGZvbnQtc2l6ZT0iMzQiIGZvbnQtd2VpZ2h0PSI1MDAiIGxldHRlci1zcGFjaW5nPSI2Ij4KICAgIDx0c3BhbiBmaWxsPSIjZGMyNjI2Ij5WT1JGQUxMTUVMREVSPC90c3Bhbj48dHNwYW4gZmlsbD0iIzZkODRhMCI+IFVORCA8L3RzcGFuPjx0c3BhbiBmaWxsPSIjMjU2M2ViIj5ET0tVTUVOVEFUSU9OPC90c3Bhbj4KICA8L3RleHQ+Cjwvc3ZnPg==">
+<style>
+/* ============ Grundgestaltung ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Yu Gothic', 'YuGothic', 'Segoe UI', sans-serif;
+  background: #f4f7fb;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+h1 { font-size: 28px; }
+h2 { font-size: 18px; }
+
+/* Fixiertes Logo rechts oben (ca. 28 mm x 28 mm) */
+#logoFixed {
+  position: fixed; top: 10px; right: 12px; z-index: 100;
+  width: 28mm; height: 28mm; pointer-events: none;
+}
+#logoFixed svg { width: 100%; height: 100%; }
+
+/* ============ Bereichsaufteilung 45 % / 55 % ============ */
+#topArea {
+  position: relative;
+  height: 45vh; min-height: 340px;
+  overflow-y: auto;
+  padding: 12px 16px 16px 16px;
+  border-bottom: 2px solid #c8d4e0;
+  background: #f4f7fb;
+}
+#bottomArea {
+  height: 55vh; min-height: 260px;
+  overflow-y: auto;
+  padding: 12px 16px;
+  background: #eef3f8;
+}
+#watermark {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(46vh, 420px); height: min(46vh, 420px);
+  opacity: 0.12; filter: blur(1.5px);
+  pointer-events: none; z-index: 0;
+}
+#topContent { position: relative; z-index: 1; }
+
+/* ============ Schriftgroessen (Abschnitt 1.1, Stand 17.10.2026) ============ */
+input, select, textarea, button, .dd-btn { font-size: 16px; font-family: inherit; }
+label, .feldlabel { font-size: 14px; font-family: inherit; }
+.hinweis, #ergebnisListe, .dd-auswahl-anzeige { font-size: 15px; }
+
+/* ============ Zeilen / Kaskade ============ */
+.zeile { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 18px; margin: 8px 0; }
+.feld { display: inline-flex; flex-direction: column; gap: 3px; }
+.feldgruppe { display: inline-flex; align-items: flex-end; gap: 6px; }
+
+/* ============ Eingabefelder ============ */
+input[type="text"], input[type="password"], input[type="date"], textarea {
+  padding: 5px 8px; border: 1.5px solid #7a8aa0; border-radius: 5px;
+  background: #fff; color: #222;
+  field-sizing: content; min-width: 5ch;
+  line-height: 1.4; min-height: 2.2em; /* Text immer vollständig sichtbar */
+}
+select { line-height: 1.4; min-height: 2.2em; }
+input#kuerzelInp { min-width: 4ch; letter-spacing: 0.15em; }
+textarea {
+  min-width: min(60ch, 90vw); max-width: min(70ch, 95vw);
+  min-height: 5em; field-sizing: content; resize: none; display: block;
+}
+input:disabled, input.ausgegraut { background: #e4e8ee; color: #333a45; }
+input[type="date"] { min-width: 11ch; }
+
+button {
+  padding: 6px 22px; border: none; border-radius: 6px;
+  cursor: pointer; color: #fff;
+}
+button.gruen { background: #1e9e4b; }
+button.rot { background: #d32f2f; }
+button.hellgrau { background: #b9c2cd; color: #222; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ============ Blinken ============ */
+@keyframes blinkFeld {
+  0%, 100% { border-color: #7a8aa0; box-shadow: none; }
+  50% { border-color: #e0332e; box-shadow: 0 0 6px rgba(224,51,46,0.6); }
+}
+.blinkt { animation: blinkFeld 1s ease-in-out infinite; }
+
+/* ============ Hinweis- und Statusmeldungen (Anhang Nr. 15) ============ */
+#meldung {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+  z-index: 200; padding: 8px 18px; border-radius: 6px;
+  background: #fff; display: none; max-width: 90vw; text-align: center;
+}
+#meldung.aktiv { display: block; color: #d32f2f; border: 1.5px solid #d32f2f; font-size: 15px; }
+#meldung.blinkend { animation: blinkFeld 1s ease-in-out infinite; }
+#meldung.fehler { color: #d32f2f; border-color: #d32f2f; }
+
+/* ============ Eigene Dropdown-Komponente ============ */
+.dd { position: relative; display: inline-block; }
+.dd-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 10px; border: 1.5px solid #7a8aa0; border-radius: 5px;
+  background: #fff; color: #222; cursor: pointer; min-width: 9ch; text-align: left;
+  max-width: 60vw; overflow-wrap: anywhere;
+  line-height: 1.4; min-height: 2.2em;
+}
+.dd-btn::after { content: "▼"; font-size: 12px; margin-left: auto; color: #55606e; }
+.dd.auf .dd-btn { border-radius: 5px 5px 0 0; }
+.dd-liste {
+  display: none; position: absolute; top: 100%; left: 0; z-index: 150;
+  min-width: 100%; max-width: min(92vw, 60ch);
+  background: #fff; border: 1.5px solid #7a8aa0; border-top: none;
+  border-radius: 0 0 5px 5px;
+  max-height: 45vh; overflow-y: auto; box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+.dd.auf .dd-liste { display: block; }
+.dd-opt {
+  padding: 6px 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  font-size: 16px; border-left: 3px solid transparent;
+}
+.dd-opt:hover { background: #eef3f8; }
+.dd-opt.ausgewaehlt::before { content: "✓"; font-weight: bold; }
+.dd-opt.ausgewaehlt { padding-left: 2px; }
+.dd-opt[data-farbe="gruen"] { border-left-color: #16a34a; background-color: #f0fdf4; }
+.dd-opt[data-farbe="rot"] { border-left-color: #dc2626; background-color: #fef2f2; }
+.dd-opt[data-farbe="gelb"] { border-left-color: #eab308; background-color: #fefce8; }
+.dd-opt[data-farbe="blau"] { border-left-color: #2563eb; background-color: #eff6ff; }
+.dd-opt[data-farbe="orange"] { border-left-color: #ea8a1c; background-color: #fff7ed; }
+.dd-opt[data-farbe="violett"] { border-left-color: #7c3aed; background-color: #f5f3ff; }
+.dd-opt[data-farbe="petrol"] { border-left-color: #0f766e; background-color: #f0fdfa; }
+.dd-opt.gesperrt { color: #9aa4b0; background: #f2f4f7; font-style: italic; }
+.dd-opt.freigeschaltet { color: #dc2626; font-weight: bold; }
+.dd-ck { width: 17px; height: 17px; flex: none; }
+
+/* Umrandung des geschlossenen Dropdown-Felds (per JS gesetzt) */
+.dd-btn.rand-gruen { border: 3px solid #16a34a; }
+.dd-btn.rand-rot { border: 3px solid #dc2626; }
+.dd-btn.rand-gelb { border: 3px solid #eab308; }
+.dd-btn.rand-blau { border: 3px solid #2563eb; }
+.dd-btn.rand-orange { border: 3px solid #ea8a1c; }
+.dd-btn.rand-violett { border: 3px solid #7c3aed; }
+.dd-btn.rand-petrol { border: 3px solid #0f766e; }
+.dd-btn.rot-text { color: #dc2626; font-weight: bold; }
+
+/* ============ Infofeld / Anhang ============ */
+#infoBlock { display: none; margin-top: 16px; justify-content: center; gap: 24px; flex-wrap: wrap; }
+#infoBlock.sichtbar { display: flex; }
+#anhangBox { display: flex; flex-direction: column; gap: 6px; max-width: 340px; }
+#anhangBox input[type="file"] { color: transparent; } /* native Beschriftung verbergen */
+#anhangBox input[type="file"]::file-selector-button { color: #222; }
+#anhangStatus { font-size: 15px; }
+#anhangStatus.grau { color: #8a94a0; }
+#anhangStatus.gruen { color: #1e9e4b; font-weight: bold; }
+#anhangStatus.rot { color: #d32f2f; font-weight: bold; }
+#infofeldHinweis { color: #55606e; font-size: 14px; margin-left: 6px; }
+#anhangListe { list-style: none; font-size: 15px; }
+#anhangListe li { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid #c8d4e0; border-radius: 4px; padding: 3px 8px; margin-top: 4px; }
+#anhangListe button { padding: 1px 8px; font-size: 14px; background: #b9c2cd; color: #222; }
+#btnZeile { display: none; justify-content: center; gap: 20px; margin-top: 16px; }
+#btnZeile.sichtbar { display: flex; }
+
+/* ============ Suchbereich ============ */
+#suchKriteriumZeile { display: none; }
+#suchKriteriumZeile.sichtbar { display: flex; }
+#suchBtnZeile { display: none; justify-content: center; gap: 20px; margin-top: 12px; }
+#suchBtnZeile.sichtbar { display: flex; }
+
+/* ============ Ergebnisbereich ============ */
+#ergebnisWrap { display: flex; gap: 16px; align-items: flex-start; }
+#ergebnisListe { flex: 1; }
+.eintrag {
+  background: #fff; border: 3px solid #999; border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 12px; line-height: 1.5;
+}
+.eintrag.k-gruen { border-color: #16a34a; }
+.eintrag.k-rot { border-color: #dc2626; }
+.eintrag.k-gelb { border-color: #eab308; }
+.eintrag.k-blau { border-color: #2563eb; }
+.eintrag .zeile-art { font-weight: bold; }
+.eintrag.k-gruen .zeile-art { color: #15803d; }
+.eintrag.k-rot .zeile-art { color: #dc2626; }
+.eintrag.k-gelb .zeile-art { color: #a16207; }
+.eintrag.k-blau .zeile-art { color: #2563eb; }
+.eintrag a { color: #1a5fb4; }
+
+/* Feld Schueler-ID */
+#schuelerIdFeld {
+  display: none; flex: none;
+  width: min(25vw, 570px); min-width: 420px;
+  background: #fff; border: 1px solid #e0e0e0; border-left: 6px solid #ea8a1c;
+  border-radius: 6px; padding: 12px 14px; font-size: 15px; line-height: 1.6;
+}
+#schuelerIdFeld.sichtbar { display: block; }
+#schuelerIdFeld h3 { font-size: 18px; margin-bottom: 8px; }
+#schuelerIdFeld .idLabel { font-weight: bold; color: #111; }
+#schuelerIdFeld .idInfo { color: #444; }
+@media (max-width: 900px) {
+  #ergebnisWrap { flex-direction: column; }
+  #schuelerIdFeld { width: 100%; min-width: 0; }
+}
+
+.kat-kopf { font-size: 15px; font-weight: bold; margin: 12px 0 8px 0; padding-bottom: 3px; border-bottom: 1.5px solid #c8d4e0; }
+.kat-kopf.k-gruen { color: #15803d; }
+.kat-kopf.k-rot { color: #dc2626; }
+.kat-kopf.k-gelb { color: #a16207; }
+.kat-kopf.k-blau { color: #2563eb; }
+
+#letzteEintraege { margin-top: 8px; }
+#letzteEintraege .eintrag { border-width: 1.5px; }
+
+/* ============ Bericht drucken (PDF) ============ */
+#druckBereich { display: none; }
+#berichtBtnZeile { margin-bottom: 10px; }
+@keyframes glasBlink {
+  0%, 100% { background: rgba(147, 197, 253, 0.38); box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.55); }
+  50% { background: rgba(147, 197, 253, 0.68); box-shadow: 0 2px 14px rgba(59, 130, 246, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.85); }
+}
+#berichtBtnZeile button {
+  font-size: 15px; color: #1e3a5f; cursor: pointer;
+  background: rgba(147, 197, 253, 0.42);              /* hellblau, halbtransparent */
+  border: 1px solid rgba(147, 197, 253, 0.65);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);                          /* Glaseffekt */
+  -webkit-backdrop-filter: blur(8px);
+  animation: glasBlink 4s ease-in-out infinite;        /* dezentes langsames Blinken */
+}
+@media print {
+  html, body { height: auto; overflow: visible; background: #fff; }
+  #topArea, #bottomArea, #logoFixed, #meldung, #berichtBtnZeile { display: none !important; }
+  #druckBereich { display: block; position: relative; font-size: 10.5pt; color: #111; }
+  #druckKopfZeile { display: flex; justify-content: space-between; align-items: flex-start; }
+  #druckLinks { flex: 1; padding-right: 6mm; }
+  #druckLogo { width: 50mm; height: 50mm; flex: none; }
+  #druckLogo svg { width: 100%; height: 100%; }
+  #druckCopyright { font-size: 8pt; color: #9aa4b0; }
+  #druckKopf { margin-top: 2mm; }
+  #druckKopf { margin-bottom: 7mm; }
+  #druckKopf h1 { font-size: 20pt; margin-bottom: 2mm; color: #2f4a68; }
+  #druckMeta { font-size: 10pt; color: #444; line-height: 1.55; }
+  #druckSchueler { margin: 5mm 0 6mm 0; }
+  #druckSchueler h2 { font-size: 13pt; margin-bottom: 2mm; }
+  .druck-kat { font-size: 13pt; font-weight: bold; margin: 5mm 0 3mm 0; padding-bottom: 1mm; border-bottom: 0.5mm solid #c8d4e0; page-break-after: avoid; }
+  .druck-kat.k-gruen { color: #15803d; }
+  .druck-kat.k-rot { color: #dc2626; }
+  .druck-kat.k-gelb { color: #a16207; }
+  .druck-kat.k-blau { color: #2563eb; }
+  .druck-eintrag { border: 1px solid #c0c8d2; border-left: 1.5mm solid #999; border-radius: 2mm; padding: 3mm 4mm; margin-bottom: 4mm; page-break-inside: avoid; line-height: 1.45; }
+  .druck-eintrag .d-art { font-weight: bold; }
+  .druck-eintrag.k-gruen { border-left-color: #16a34a; } .druck-eintrag.k-gruen .d-art { color: #15803d; }
+  .druck-eintrag.k-rot { border-left-color: #dc2626; } .druck-eintrag.k-rot .d-art { color: #dc2626; }
+  .druck-eintrag.k-gelb { border-left-color: #eab308; } .druck-eintrag.k-gelb .d-art { color: #a16207; }
+  .druck-eintrag.k-blau { border-left-color: #2563eb; } .druck-eintrag.k-blau .d-art { color: #2563eb; }
+  @page { size: A4; margin: 15mm; }
+}
+.versteckt { display: none !important; }
+#passwortFeld input { min-width: 8ch; }
+</style>
+</head>
+<body>
+
+<!-- Fixiertes Logo rechts oben -->
+<div id="logoFixed" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Hintergrund des Canvas -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f6fb"/>
+      <stop offset="1" stop-color="#e3ecf6"/>
+    </linearGradient>
+
+    <!-- Glas-Grundflaeche -->
+    <radialGradient id="glass" cx="0.35" cy="0.28" r="0.95">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#dfe9f5" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Spekularer Glanz oben links -->
+    <linearGradient id="spec" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Schlagschatten -->
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#3d5a80" flood-opacity="0.28"/>
+    </filter>
+    <filter id="blurBlob"><feGaussianBlur stdDeviation="46"/></filter>
+    <filter id="blurSm"><feGaussianBlur stdDeviation="6"/></filter>
+
+    <!-- Kategoriefarben -->
+    <radialGradient id="gGreen" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#16a34a"/>
+    </radialGradient>
+    <radialGradient id="gRed" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/>
+    </radialGradient>
+    <radialGradient id="gYellow" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#eab308"/>
+    </radialGradient>
+    <radialGradient id="gBlue" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/>
+    </radialGradient>
+    <linearGradient id="book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe7f3"/>
+    </linearGradient>
+    <linearGradient id="bookSpine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b9cce0"/><stop offset="1" stop-color="#8fa9c4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hintergrund -->
+  <rect width="1024" height="1024" rx="120" fill="url(#bg)"/>
+
+  <!-- ===== Kreis-Logo ===== -->
+  <g filter="url(#soft)">
+    <!-- Glas-Kreis -->
+    <circle cx="512" cy="452" r="330" fill="url(#glass)"/>
+    <!-- Farb-Blobs hinter Glas (Glassmorphism) -->
+    <g clip-path="circle(330px at 512 452)">
+      <circle cx="380" cy="330" r="150" fill="#22c55e" opacity="0.55" filter="url(#blurBlob)"/>
+      <circle cx="650" cy="300" r="140" fill="#ef4444" opacity="0.50" filter="url(#blurBlob)"/>
+      <circle cx="660" cy="600" r="150" fill="#facc15" opacity="0.50" filter="url(#blurBlob)"/>
+      <circle cx="370" cy="610" r="145" fill="#3b82f6" opacity="0.50" filter="url(#blurBlob)"/>
+      <!-- Frosted Overlay -->
+      <circle cx="512" cy="452" r="330" fill="#ffffff" opacity="0.30"/>
+      <!-- Spekularer Glanz -->
+      <ellipse cx="430" cy="300" rx="230" ry="120" fill="url(#spec)" filter="url(#blurSm)"/>
+    </g>
+    <!-- Glas-Rand -->
+    <circle cx="512" cy="452" r="330" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="10"/>
+    <circle cx="512" cy="452" r="316" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>
+  </g>
+
+  <!-- ===== Symbol: Notizbuch mit Sprechblase ===== -->
+  <g transform="translate(512 452)">
+    <!-- Notizbuch -->
+    <g transform="rotate(-6)">
+      <rect x="-150" y="-105" width="260" height="230" rx="26" fill="url(#book)" stroke="#9db4cc" stroke-width="5"/>
+      <rect x="-150" y="-105" width="34" height="230" rx="16" fill="url(#bookSpine)"/>
+      <g stroke="#c3d3e4" stroke-width="7" stroke-linecap="round">
+        <line x1="-92" y1="-52" x2="76" y2="-52"/>
+        <line x1="-92" y1="-14" x2="76" y2="-14"/>
+        <line x1="-92" y1="24" x2="48" y2="24"/>
+        <line x1="-92" y1="62" x2="76" y2="62"/>
+      </g>
+    </g>
+    <!-- Sprechblase -->
+    <g transform="translate(88 -92)">
+      <path d="M -78 -52 h156 a24 24 0 0 1 24 24 v52 a24 24 0 0 1 -24 24 h-96 l-38 34 v-34 h-22 a24 24 0 0 1 -24 -24 v-52 a24 24 0 0 1 24 -24 z"
+            fill="#ffffff" fill-opacity="0.92" stroke="#8fa9c4" stroke-width="5"/>
+      <!-- 4 Kategorienpunkte -->
+      <circle cx="-42" cy="0" r="17" fill="url(#gGreen)"/>
+      <circle cx="-2"  cy="0" r="17" fill="url(#gRed)"/>
+      <circle cx="38"  cy="0" r="17" fill="url(#gYellow)"/>
+      <circle cx="78"  cy="0" r="17" fill="url(#gBlue)"/>
+    </g>
+  </g>
+
+  <!-- ===== Schriftzug ===== -->
+  <text x="625.4" y="908" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="106" font-weight="800" letter-spacing="2">
+    <tspan fill="#16a34a">L</tspan><tspan fill="#2f4a68">og</tspan><tspan fill="#eab308">B</tspan><tspan fill="#2f4a68">uch</tspan><tspan dx="55"> </tspan><tspan fill="#111827" font-size="53">HARBI</tspan>
+  </text>
+  <text x="512" y="985" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="34" font-weight="500" letter-spacing="6">
+    <tspan fill="#dc2626">VORFALLMELDER</tspan><tspan fill="#6d84a0"> UND </tspan><tspan fill="#2563eb">DOKUMENTATION</tspan>
+  </text>
+</svg></div>
+
+<!-- Wasserzeichen im oberen Bereich -->
+<div id="topArea">
+  <div id="watermark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Hintergrund des Canvas -->
+    <linearGradient id="wm_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f6fb"/>
+      <stop offset="1" stop-color="#e3ecf6"/>
+    </linearGradient>
+
+    <!-- Glas-Grundflaeche -->
+    <radialGradient id="wm_glass" cx="0.35" cy="0.28" r="0.95">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#dfe9f5" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Spekularer Glanz oben links -->
+    <linearGradient id="wm_spec" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Schlagschatten -->
+    <filter id="wm_soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#3d5a80" flood-opacity="0.28"/>
+    </filter>
+    <filter id="wm_blurBlob"><feGaussianBlur stdDeviation="46"/></filter>
+    <filter id="wm_blurSm"><feGaussianBlur stdDeviation="6"/></filter>
+
+    <!-- Kategoriefarben -->
+    <radialGradient id="wm_gGreen" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#16a34a"/>
+    </radialGradient>
+    <radialGradient id="wm_gRed" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/>
+    </radialGradient>
+    <radialGradient id="wm_gYellow" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#eab308"/>
+    </radialGradient>
+    <radialGradient id="wm_gBlue" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/>
+    </radialGradient>
+    <linearGradient id="wm_book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe7f3"/>
+    </linearGradient>
+    <linearGradient id="wm_bookSpine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b9cce0"/><stop offset="1" stop-color="#8fa9c4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hintergrund -->
+  <rect width="1024" height="1024" rx="120" fill="url(#wm_bg)"/>
+
+  <!-- ===== Kreis-Logo ===== -->
+  <g filter="url(#wm_soft)">
+    <!-- Glas-Kreis -->
+    <circle cx="512" cy="452" r="330" fill="url(#wm_glass)"/>
+    <!-- Farb-Blobs hinter Glas (Glassmorphism) -->
+    <g clip-path="circle(330px at 512 452)">
+      <circle cx="380" cy="330" r="150" fill="#22c55e" opacity="0.55" filter="url(#wm_blurBlob)"/>
+      <circle cx="650" cy="300" r="140" fill="#ef4444" opacity="0.50" filter="url(#wm_blurBlob)"/>
+      <circle cx="660" cy="600" r="150" fill="#facc15" opacity="0.50" filter="url(#wm_blurBlob)"/>
+      <circle cx="370" cy="610" r="145" fill="#3b82f6" opacity="0.50" filter="url(#wm_blurBlob)"/>
+      <!-- Frosted Overlay -->
+      <circle cx="512" cy="452" r="330" fill="#ffffff" opacity="0.30"/>
+      <!-- Spekularer Glanz -->
+      <ellipse cx="430" cy="300" rx="230" ry="120" fill="url(#wm_spec)" filter="url(#wm_blurSm)"/>
+    </g>
+    <!-- Glas-Rand -->
+    <circle cx="512" cy="452" r="330" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="10"/>
+    <circle cx="512" cy="452" r="316" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>
+  </g>
+
+  <!-- ===== Symbol: Notizbuch mit Sprechblase ===== -->
+  <g transform="translate(512 452)">
+    <!-- Notizbuch -->
+    <g transform="rotate(-6)">
+      <rect x="-150" y="-105" width="260" height="230" rx="26" fill="url(#wm_book)" stroke="#9db4cc" stroke-width="5"/>
+      <rect x="-150" y="-105" width="34" height="230" rx="16" fill="url(#wm_bookSpine)"/>
+      <g stroke="#c3d3e4" stroke-width="7" stroke-linecap="round">
+        <line x1="-92" y1="-52" x2="76" y2="-52"/>
+        <line x1="-92" y1="-14" x2="76" y2="-14"/>
+        <line x1="-92" y1="24" x2="48" y2="24"/>
+        <line x1="-92" y1="62" x2="76" y2="62"/>
+      </g>
+    </g>
+    <!-- Sprechblase -->
+    <g transform="translate(88 -92)">
+      <path d="M -78 -52 h156 a24 24 0 0 1 24 24 v52 a24 24 0 0 1 -24 24 h-96 l-38 34 v-34 h-22 a24 24 0 0 1 -24 -24 v-52 a24 24 0 0 1 24 -24 z"
+            fill="#ffffff" fill-opacity="0.92" stroke="#8fa9c4" stroke-width="5"/>
+      <!-- 4 Kategorienpunkte -->
+      <circle cx="-42" cy="0" r="17" fill="url(#wm_gGreen)"/>
+      <circle cx="-2"  cy="0" r="17" fill="url(#wm_gRed)"/>
+      <circle cx="38"  cy="0" r="17" fill="url(#wm_gYellow)"/>
+      <circle cx="78"  cy="0" r="17" fill="url(#wm_gBlue)"/>
+    </g>
+  </g>
+
+  <!-- ===== Schriftzug ===== -->
+  <text x="625.4" y="908" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="106" font-weight="800" letter-spacing="2">
+    <tspan fill="#16a34a">L</tspan><tspan fill="#2f4a68">og</tspan><tspan fill="#eab308">B</tspan><tspan fill="#2f4a68">uch</tspan><tspan dx="55"> </tspan><tspan fill="#111827" font-size="53">HARBI</tspan>
+  </text>
+  <text x="512" y="985" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="34" font-weight="500" letter-spacing="6">
+    <tspan fill="#dc2626">VORFALLMELDER</tspan><tspan fill="#6d84a0"> UND </tspan><tspan fill="#2563eb">DOKUMENTATION</tspan>
+  </text>
+</svg></div>
+  <div id="topContent">
+    <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r Vorfallmelder u. Dokumentation</h1>
+
+    <!-- ===== Anliegen (erstes sichtbares Element) ===== -->
+    <div class="zeile" id="anliegenZeile">
+      <div class="feld">
+        <label class="feldlabel" for="anliegenSel">Anliegen</label>
+        <select id="anliegenSel" class="blinkt">
+          <option value="">--- bitte w&auml;hlen ---</option>
+          <option value="eingeben">Daten eingeben</option>
+          <option value="abfragen">Daten abfragen</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ===== EINGABEMODUS ===== -->
+    <div id="eingabeModus" class="versteckt">
+      <!-- Zeile 1: Lehrerkuerzel + Schulfach -->
+      <div class="zeile" id="zeileLehrer"></div>
+      <!-- Zeile 2: Art des Eintrags (+ Passwort) -->
+      <div class="zeile" id="zeileArt"></div>
+      <!-- Zeile 3: Datum + Klasse + Schueler -->
+      <div class="zeile" id="zeileDatum"></div>
+      <!-- Zeile 4: Sonderauswahl + Unterauswahl -->
+      <div class="zeile" id="zeileSonder"></div>
+      <!-- Infofeld + Dateianhang -->
+      <div id="infoBlock">
+        <div class="feld">
+          <label class="feldlabel" for="infofeld">Infofeld bzw. erg&auml;nzende Nachricht<span id="infofeldHinweis"> * mindestens 5 Zeichen</span></label>
+          <textarea id="infofeld" rows="4"></textarea>
+        </div>
+        <div id="anhangBox" class="feld">
+          <label class="feldlabel" for="anhangInput">Dateianhang (optional)</label>
+          <input type="file" id="anhangInput" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+          <span id="anhangStatus" class="grau">Keine Datei ausgew&auml;hlt</span>
+          <ul id="anhangListe"></ul>
+        </div>
+      </div>
+      <div id="btnZeile">
+        <button id="btnSpeichern" class="gruen">Eintrag Speichern</button>
+        <button id="btnLoeschen" class="rot">Eintrag l&ouml;schen</button>
+      </div>
+    </div>
+
+    <!-- ===== ABFRAGEMODUS ===== -->
+    <div id="sucheModus" class="versteckt">
+      <div class="zeile sichtbar" id="suchKriteriumZeile">
+        <div class="feld">
+          <label class="feldlabel" for="suchenNachSel">Suchen nach</label>
+          <select id="suchenNachSel">
+            <option value="">--- bitte w&auml;hlen ---</option>
+            <option value="schueler">Sch&uuml;ler</option>
+            <option value="art">Art des Eintrags</option>
+          </select>
+        </div>
+      </div>
+      <div class="zeile" id="suchWertZeile"></div>
+      <div id="suchBtnZeile">
+        <button id="btnSuchen" class="gruen" disabled>Suchen</button>
+        <button id="btnVerwerfen" class="hellgrau">Verwerfen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Unterer Bereich: Suchergebnisse / zuletzt gespeicherte Eintraege -->
+<div id="bottomArea">
+  <div id="berichtBtnZeile" class="versteckt">
+    <button id="btnBericht" type="button" class="hellgrau">&#128424; Bericht drucken (PDF)</button>
+  </div>
+  <div id="ergebnisWrap">
+    <div id="ergebnisListe"></div>
+    <div id="schuelerIdFeld"><h3>Sch&uuml;ler-ID</h3><div id="schuelerIdInhalt"></div></div>
+  </div>
+  <div id="letzteEintraege" class="versteckt"><h2>Zuletzt gespeicherte Eintr&auml;ge</h2><div id="letzteListe"></div></div>
+</div>
+
+<div id="druckLogoVorlage" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Hintergrund des Canvas -->
+    <linearGradient id="dr_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f6fb"/>
+      <stop offset="1" stop-color="#e3ecf6"/>
+    </linearGradient>
+
+    <!-- Glas-Grundflaeche -->
+    <radialGradient id="dr_glass" cx="0.35" cy="0.28" r="0.95">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#dfe9f5" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Spekularer Glanz oben links -->
+    <linearGradient id="dr_spec" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Schlagschatten -->
+    <filter id="dr_soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#3d5a80" flood-opacity="0.28"/>
+    </filter>
+    <filter id="dr_blurBlob"><feGaussianBlur stdDeviation="46"/></filter>
+    <filter id="dr_blurSm"><feGaussianBlur stdDeviation="6"/></filter>
+
+    <!-- Kategoriefarben -->
+    <radialGradient id="dr_gGreen" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#16a34a"/>
+    </radialGradient>
+    <radialGradient id="dr_gRed" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/>
+    </radialGradient>
+    <radialGradient id="dr_gYellow" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#eab308"/>
+    </radialGradient>
+    <radialGradient id="dr_gBlue" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/>
+    </radialGradient>
+    <linearGradient id="dr_book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe7f3"/>
+    </linearGradient>
+    <linearGradient id="dr_bookSpine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b9cce0"/><stop offset="1" stop-color="#8fa9c4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hintergrund -->
+  <rect width="1024" height="1024" rx="120" fill="url(#dr_bg)"/>
+
+  <!-- ===== Kreis-Logo ===== -->
+  <g filter="url(#dr_soft)">
+    <!-- Glas-Kreis -->
+    <circle cx="512" cy="452" r="330" fill="url(#dr_glass)"/>
+    <!-- Farb-Blobs hinter Glas (Glassmorphism) -->
+    <g clip-path="circle(330px at 512 452)">
+      <circle cx="380" cy="330" r="150" fill="#22c55e" opacity="0.55" filter="url(#dr_blurBlob)"/>
+      <circle cx="650" cy="300" r="140" fill="#ef4444" opacity="0.50" filter="url(#dr_blurBlob)"/>
+      <circle cx="660" cy="600" r="150" fill="#facc15" opacity="0.50" filter="url(#dr_blurBlob)"/>
+      <circle cx="370" cy="610" r="145" fill="#3b82f6" opacity="0.50" filter="url(#dr_blurBlob)"/>
+      <!-- Frosted Overlay -->
+      <circle cx="512" cy="452" r="330" fill="#ffffff" opacity="0.30"/>
+      <!-- Spekularer Glanz -->
+      <ellipse cx="430" cy="300" rx="230" ry="120" fill="url(#dr_spec)" filter="url(#dr_blurSm)"/>
+    </g>
+    <!-- Glas-Rand -->
+    <circle cx="512" cy="452" r="330" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="10"/>
+    <circle cx="512" cy="452" r="316" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>
+  </g>
+
+  <!-- ===== Symbol: Notizbuch mit Sprechblase ===== -->
+  <g transform="translate(512 452)">
+    <!-- Notizbuch -->
+    <g transform="rotate(-6)">
+      <rect x="-150" y="-105" width="260" height="230" rx="26" fill="url(#dr_book)" stroke="#9db4cc" stroke-width="5"/>
+      <rect x="-150" y="-105" width="34" height="230" rx="16" fill="url(#dr_bookSpine)"/>
+      <g stroke="#c3d3e4" stroke-width="7" stroke-linecap="round">
+        <line x1="-92" y1="-52" x2="76" y2="-52"/>
+        <line x1="-92" y1="-14" x2="76" y2="-14"/>
+        <line x1="-92" y1="24" x2="48" y2="24"/>
+        <line x1="-92" y1="62" x2="76" y2="62"/>
+      </g>
+    </g>
+    <!-- Sprechblase -->
+    <g transform="translate(88 -92)">
+      <path d="M -78 -52 h156 a24 24 0 0 1 24 24 v52 a24 24 0 0 1 -24 24 h-96 l-38 34 v-34 h-22 a24 24 0 0 1 -24 -24 v-52 a24 24 0 0 1 24 -24 z"
+            fill="#ffffff" fill-opacity="0.92" stroke="#8fa9c4" stroke-width="5"/>
+      <!-- 4 Kategorienpunkte -->
+      <circle cx="-42" cy="0" r="17" fill="url(#dr_gGreen)"/>
+      <circle cx="-2"  cy="0" r="17" fill="url(#dr_gRed)"/>
+      <circle cx="38"  cy="0" r="17" fill="url(#dr_gYellow)"/>
+      <circle cx="78"  cy="0" r="17" fill="url(#dr_gBlue)"/>
+    </g>
+  </g>
+
+  <!-- ===== Schriftzug ===== -->
+  <text x="625.4" y="908" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="106" font-weight="800" letter-spacing="2">
+    <tspan fill="#16a34a">L</tspan><tspan fill="#2f4a68">og</tspan><tspan fill="#eab308">B</tspan><tspan fill="#2f4a68">uch</tspan><tspan dx="55"> </tspan><tspan fill="#111827" font-size="53">HARBI</tspan>
+  </text>
+  <text x="512" y="985" text-anchor="middle"
+        font-family="Yu Gothic, Segoe UI, DejaVu Sans, sans-serif"
+        font-size="34" font-weight="500" letter-spacing="6">
+    <tspan fill="#dc2626">VORFALLMELDER</tspan><tspan fill="#6d84a0"> UND </tspan><tspan fill="#2563eb">DOKUMENTATION</tspan>
+  </text>
+</svg></div>
+
+<div id="druckBereich"></div>
+
+<div id="meldung" role="status"></div>
+
+<script>
+"use strict";
+/* ================= Konfiguration ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_3v6wOL3Fk1ZvXSOFwGKqGAw3TAm_dsd1RIwQ7HXNrESILALbLA5OBjYOuRy4ieGGFw/exec';
+const PASSWORT_SB = "1971";
+
+const SCHUELERLISTE = [
+  "Amuzu, Prince","Arfe, Selya","Bernsdorf, Emily","Beskardes (Beşkardeş), Efe",
+  "Dagtekin (Dağtekin), Ahmet","El Arrag, Hidaya","El Yachaoui, Moussa","Faizi, Fereshte",
+  "Galali, Bahoz","Große, Jayden","Hafiane, Yassmine","Kremsier, Philipp",
+  "Kusi Oppong, Jayden","Labahn, Fabienne","Mehmed, Neriman","Mpanzu, Ambrósio",
+  "Othman, Helin","Pawlak, Alisha","Raulf, Celina","Saighani, Sorosch",
+  "Sarpong, Susana","Schwarzbrunn, Cheyenne","Shaker, Shaker","Shutcha, Amour",
+  "Strek, Emilia Sophie","Tserkovna, Alisa","Ural, Umut"
+];
+const ARTE = [
+  { wert:"Inklusion", farbe:"gruen" },
+  { wert:"Vorfallmelder", farbe:"rot" },
+  { wert:"Elterngespräch", farbe:"gelb" },
+  { wert:"Schülerbesonderheit", farbe:"blau" }
+];
+const ARTE_SUCHE = ARTE.slice(0,3);
+const SONDER = [
+  { wert:"BUT", farbe:"gruen" }, { wert:"Förderbedarf", farbe:"orange" },
+  { wert:"LRS", farbe:"violett" }, { wert:"Nachteilsausgleich", farbe:"petrol" },
+  { wert:"Merkmal", farbe:"blau" }
+];
+const FOERDER = ["LE","GE","ESE","SQ","KME","ASS"];
+const FARBE_KLASSE = { gruen:"k-gruen", rot:"k-rot", gelb:"k-gelb", blau:"k-blau" };
+
+/* ================= Zustand ================= */
+let zustand = {
+  modus:null, kuerzel:"", schulfach:"", art:"", artFarbe:"",
+  sbFreigeschaltet:false, sonderTyp:"", sonderWert:"",
+  schuelerAuswahl:[], datum:"", klasse:"",
+  anhaenge:[], anhangFehler:false, schuelerBlinkAus:false
+};
+let letzteEintraege = [];
+let letzteTreffer = [];
+
+/* ================= Hilfsfunktionen ================= */
+function el(tag, attrs, parent){
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function zeigeMeldung(text, opt){
+  opt = opt || {};
+  const m = document.getElementById('meldung');
+  m.textContent = text;
+  m.className = 'aktiv' + (opt.blinkend !== false ? ' blinkend' : '') + (opt.fehler ? ' fehler' : '');
+  clearTimeout(m._t);
+  if (!opt.dauerhaft) m._t = setTimeout(()=>{ m.className=''; m.textContent=''; }, opt.ms || 4000);
+}
+function berechneKlasse(isoDatum){
+  const d = new Date(isoDatum + "T00:00:00");
+  const jahr = d.getFullYear(), monat = d.getMonth(), tag = d.getDate(); // Monat 0-basiert
+  // Klassenwechsel jeweils am 30.07.; Buchstabe C bleibt bestehen (exakt nach Anweisung Abschnitt 6)
+  let stufe = 6 + (jahr - 2027) + ((monat > 6 || (monat === 6 && tag >= 30)) ? 1 : 0);
+  if (stufe < 1) stufe = 1;
+  return stufe + "C";
+}
+function isoZuDeutsch(d){
+  if(!d) return "";
+  d = String(d).trim();
+  let m = d.match(/(\d{4})-(\d{2})-(\d{2})/);            // ISO, auch mit Zeitanteil
+  if (m) return m[3]+"."+m[2]+"."+m[1];
+  if (/^\d{2}\.\d{2}\.\d{4}/.test(d)) return d;         // bereits TT.MM.JJJJ
+  const dt = new Date(d);                                    // z. B. "Tue Nov 25 2025 09:00:00 GMT+0100 ..."
+  if (!isNaN(dt)) return String(dt.getDate()).padStart(2,'0') + "." + String(dt.getMonth()+1).padStart(2,'0') + "." + dt.getFullYear();
+  return d;
+}
+function alsIsoDatum(d){
+  d = String(d || '').trim();
+  var m = d.match(/^(\d{4})-(\d{2})-(\d{2})/);   // ISO JJJJ-MM-TT
+  if (m) return m[1]+'-'+m[2]+'-'+m[3];
+  m = d.match(/^(\d{2})\.(\d{2})\.(\d{4})/);   // TT.MM.JJJJ
+  if (m) return m[3]+'-'+m[2]+'-'+m[1];
+  var dt = new Date(d);                            // Sheet-Datumsobjekte, z. B. "Tue Nov 25 2025 ..."
+  if (!isNaN(dt)) return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+  return d;
+}
+function farbeZuRand(farbe){ return farbe ? "rand-"+farbe : ""; }
+
+/* ============ Eigene Dropdown-Komponente ============ */
+/* opts: { label, placeholder, optionen:[{wert, farbe, gesperrt, freigeschaltet}],
+   multi, onChange(ausgewaehltArray) } */
+function erstelleDropdown(parent, opts){
+  const feld = el('div', {class:'feld'}, parent);
+  if (opts.label) el('label', {class:'feldlabel'}, feld).textContent = opts.label;
+  const dd = el('div', {class:'dd'}, feld);
+  const btn = el('button', {type:'button', class:'dd-btn'}, dd);
+  btn.textContent = opts.placeholder || "--- bitte wählen ---";
+  const liste = el('div', {class:'dd-liste', role:'listbox'}, dd);
+  const auswahl = [];
+
+  opts.optionen.forEach(opt=>{
+    const o = el('div', {class:'dd-opt', role:'option'}, liste);
+    o.dataset.wert = opt.wert;
+    if (opt.farbe) o.dataset.farbe = opt.farbe;
+    if (opt.gesperrt) o.classList.add('gesperrt');
+    if (opt.freigeschaltet) o.classList.add('freigeschaltet');
+    if (opts.multi) {
+      const ck = el('input', {type:'checkbox', class:'dd-ck'}, o);
+      ck.addEventListener('click', e=>e.stopPropagation());
+      ck.addEventListener('change', ()=>{
+        if (ck.checked) { if(!auswahl.includes(opt.wert)) auswahl.push(opt.wert); }
+        else { const i = auswahl.indexOf(opt.wert); if(i>-1) auswahl.splice(i,1); }
+        o.classList.toggle('ausgewaehlt', ck.checked);
+        btn.textContent = auswahl.length ? auswahl.join("; ") : (opts.placeholder || "--- bitte wählen ---");
+        opts.onChange(auswahl.slice());
+      });
+      o.appendChild(document.createTextNode(opt.wert));
+    } else {
+      o.textContent = opt.wert;
+      o.addEventListener('click', ()=>{
+        auswahl.length = 0; auswahl.push(opt.wert);
+        liste.querySelectorAll('.dd-opt').forEach(x=>x.classList.remove('ausgewaehlt'));
+        o.classList.add('ausgewaehlt');
+        btn.textContent = opt.wert;
+        dd.classList.remove('auf');
+        opts.onChange(auswahl.slice());
+      });
+    }
+  });
+
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    if (!opts.multi && opts.optionen.some(o=>o.gesperrt && !opts.onGesperrtKlick)) {}
+    document.querySelectorAll('.dd.auf').forEach(x=>{ if(x!==dd) x.classList.remove('auf'); });
+    dd.classList.toggle('auf');
+  });
+  dd.addEventListener('keydown', e=>{
+    if (e.key === 'Escape') dd.classList.remove('auf');
+  });
+  return {
+    element: dd, btn, auswahl,
+    setzeBtnText(t){ btn.textContent = t; },
+    setzeRand(farbe){ btn.className = 'dd-btn' + (farbe ? ' rand-'+farbe : ''); },
+    markiereFreigeschaltet(wert){
+      const o = liste.querySelector('[data-wert="'+wert+'"]');
+      if (o){ o.classList.remove('gesperrt'); o.classList.add('freigeschaltet'); }
+      btn.classList.add('rot-text');
+    },
+    reset(){
+      auswahl.length = 0;
+      btn.textContent = opts.placeholder || "--- bitte wählen ---";
+      btn.className = 'dd-btn';
+      liste.querySelectorAll('.dd-opt').forEach(x=>x.classList.remove('ausgewaehlt'));
+      liste.querySelectorAll('.dd-ck').forEach(c=>c.checked=false);
+    },
+    wert(){ return auswahl.slice(); }
+  };
+}
+document.addEventListener('click', e=>{
+  if (!e.target.closest('.dd')) document.querySelectorAll('.dd.auf').forEach(x=>x.classList.remove('auf'));
+});
+
+/* ================= Anliegen ================= */
+const anliegenSel = document.getElementById('anliegenSel');
+anliegenSel.addEventListener('change', ()=>{
+  const wert = anliegenSel.value;
+  if (!wert) return;
+  anliegenSel.classList.remove('blinkt');
+  document.getElementById('ergebnisListe').innerHTML = '';
+  document.getElementById('schuelerIdFeld').classList.remove('sichtbar');
+  document.getElementById('berichtBtnZeile').classList.add('versteckt');
+  document.getElementById('letzteEintraege').classList.add('versteckt');
+  if (wert === 'eingeben') startEingabeModus();
+  else startSucheModus();
+});
+
+/* ================= EINGABEMODUS ================= */
+let ddArt, ddSonder, ddUnter, ddSchueler;
+
+function startEingabeModus(){
+  zustand.modus = 'eingeben';
+  document.getElementById('sucheModus').classList.add('versteckt');
+  document.getElementById('eingabeModus').classList.remove('versteckt');
+  baueLehrerZeile();
+}
+function baueLehrerZeile(){
+  const zeile = document.getElementById('zeileLehrer');
+  zeile.innerHTML = '';
+  const gruppe = el('div', {class:'feldgruppe'}, zeile);
+
+  // Lehrerkuerzel
+  const f1 = el('div', {class:'feld'}, gruppe);
+  el('label', {class:'feldlabel', for:'kuerzelInp'}, f1).textContent = 'Lehrerkürzel';
+  const inp = el('input', {type:'text', id:'kuerzelInp', class:'blinkt', maxlength:'4', autocomplete:'off'}, f1);
+  inp.addEventListener('input', ()=>{ inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,''); });
+  inp.addEventListener('keydown', e=>{
+    if (e.key === 'Enter'){
+      const v = inp.value.trim();
+      if (v.length < 2 || v.length > 4){ zeigeMeldung('Bitte 2 bis 4 Buchstaben eingeben.', {fehler:true}); return; }
+      e.preventDefault();
+      zustand.kuerzel = v;
+      inp.classList.remove('blinkt');
+      baueSchulfach(gruppe);
+    }
+  });
+  inp.focus();
+}
+function baueSchulfach(gruppe){
+  if (document.getElementById('fachInp')) return;
+  const f2 = el('div', {class:'feld'}, gruppe);
+  el('label', {class:'feldlabel', for:'fachInp'}, f2).textContent = 'Schulfach/Funktion';
+  const inp = el('input', {type:'text', id:'fachInp', class:'blinkt', autocomplete:'off'}, f2);
+  inp.addEventListener('keydown', e=>{
+    if (e.key === 'Enter'){
+      const v = inp.value.trim();
+      if (!v){ zeigeMeldung('Bitte Schulfach/Funktion eingeben.', {fehler:true}); return; }
+      e.preventDefault();
+      zustand.schulfach = v; // keine Grossschreibungspflicht
+      inp.classList.remove('blinkt');
+      baueArtDropdown();
+    }
+  });
+  inp.focus();
+}
+
+/* --- Art des Eintrags (eigene Dropdown-Komponente) --- */
+function baueArtDropdown(){
+  if (ddArt) return;
+  const zeile = document.getElementById('zeileArt');
+  ddArt = erstelleDropdown(zeile, {
+    label: 'Art des Eintrags',
+    placeholder: '--- bitte wählen ---',
+    optionen: ARTE.map(a=>({ wert:a.wert, farbe:a.farbe,
+      gesperrt: a.wert==='Schülerbesonderheit' && !zustand.sbFreigeschaltet,
+      freigeschaltet: a.wert==='Schülerbesonderheit' && zustand.sbFreigeschaltet })),
+    onChange(arr){
+      const wert = arr[0];
+      if (wert === 'Schülerbesonderheit' && !zustand.sbFreigeschaltet){
+        zeigeMeldung("'Schülerbesonderheit' erfordert ein Passwort");
+        bauePasswortfeld();
+        ddArt.setzeBtnText('--- bitte wählen ---');
+        return;
+      }
+      zustand.art = wert;
+      zustand.artFarbe = (ARTE.find(a=>a.wert===wert)||{}).farbe || '';
+      ddArt.setzeRand(zustand.artFarbe);
+      if (zustand.artFarbe === 'blau') ddArt.btn.classList.add('rot-text');
+      entfernePasswortfeld();
+      if (wert === 'Schülerbesonderheit') baueSonderauswahl();
+      else { entferneSonderauswahl(); }
+      baueDatumZeile();
+      pruefeVollstaendig();
+    }
+  });
+}
+
+/* --- Passwortabfrage --- */
+function bauePasswortfeld(){
+  if (document.getElementById('passwortFeld')) return;
+  const zeile = document.getElementById('zeileArt');
+  const f = el('div', {class:'feld', id:'passwortFeld'}, zeile);
+  el('label', {class:'feldlabel', for:'pwInp'}, f).textContent = 'Passwort';
+  const pw = el('input', {type:'password', id:'pwInp', class:'blinkt', placeholder:'****', maxlength:'10', autocomplete:'off'}, f);
+  pw.addEventListener('keydown', e=>{
+    if (e.key === 'Enter'){
+      e.preventDefault();
+      if (pw.value === PASSWORT_SB){
+        zustand.sbFreigeschaltet = true;
+        entfernePasswortfeld();
+        ddArt.markiereFreigeschaltet('Schülerbesonderheit');
+        ddArt.setzeRand('blau');
+        ddArt.btn.textContent = 'Schülerbesonderheit';
+        ddArt.auswahl.length = 0; ddArt.auswahl.push('Schülerbesonderheit');
+        zustand.art = 'Schülerbesonderheit'; zustand.artFarbe = 'blau';
+        zeigeMeldung("Berechtigung für 'Schülerbesonderheit' freigeschaltet");
+        baueSonderauswahl();
+        baueDatumZeile();
+      } else {
+        zeigeMeldung('Falsches Passwort.', {fehler:true, dauerhaft:true});
+      }
+    }
+  });
+  pw.focus();
+}
+function entfernePasswortfeld(){
+  const f = document.getElementById('passwortFeld');
+  if (f) f.remove();
+}
+
+/* --- Datum / Klasse / Schueler --- */
+function baueDatumZeile(){
+  const zeile = document.getElementById('zeileDatum');
+  if (!zustand.art) return;
+  if (document.getElementById('datumInp')) return; // vorhandene Eingaben nicht verwerfen
+  zeile.innerHTML = '';
+
+  const f1 = el('div', {class:'feld'}, zeile);
+  el('label', {class:'feldlabel', for:'datumInp'}, f1).textContent = 'Datum des Eintrags';
+  const datum = el('input', {type:'date', id:'datumInp', class:'blinkt'}, f1);
+  datum.addEventListener('change', ()=>{
+    if (!datum.value) return;
+    datum.classList.remove('blinkt');
+    zustand.datum = datum.value;
+    zustand.klasse = berechneKlasse(datum.value);
+    const kInp = document.getElementById('klasseInp');
+    if (kInp) kInp.value = zustand.klasse;
+    baueSchuelerDropdown();
+    pruefeVollstaendig();
+  });
+
+  const f2 = el('div', {class:'feld'}, zeile);
+  el('label', {class:'feldlabel', for:'klasseInp'}, f2).textContent = 'Klasse';
+  el('input', {type:'text', id:'klasseInp', class:'ausgegraut', disabled:'disabled'}, f2);
+}
+function baueSchuelerDropdown(){
+  if (ddSchueler) ddSchueler.element.closest('.feld').remove();
+  const zeile = document.getElementById('zeileDatum');
+  ddSchueler = erstelleDropdown(zeile, {
+    label: 'Schüler (Mehrfachauswahl möglich)',
+    placeholder: '--- bitte wählen ---',
+    multi: true,
+    optionen: SCHUELERLISTE.map(s=>({wert:s})),
+    onChange(arr){
+      zustand.schuelerAuswahl = arr;
+      if (arr.length && !zustand.schuelerBlinkAus){
+        zustand.schuelerBlinkAus = true; // Blinken endet dauerhaft bis Reset
+        ddSchueler.btn.classList.remove('blinkt');
+      }
+      if (arr.length && ddSchueler.btn.classList.contains('blinkt')) ddSchueler.btn.classList.remove('blinkt');
+      pruefeVollstaendig();
+    }
+  });
+  if (!zustand.schuelerBlinkAus) ddSchueler.btn.classList.add('blinkt');
+}
+
+/* --- Sonderauswahl --- */
+function baueSonderauswahl(){
+  entferneSonderauswahl(true);
+  const zeile = document.getElementById('zeileSonder');
+  ddSonder = erstelleDropdown(zeile, {
+    label: 'Sonderauswahl',
+    placeholder: '--- bitte wählen ---',
+    optionen: SONDER.map(s=>({wert:s.wert, farbe:s.farbe})),
+    onChange(arr){
+      const wert = arr[0];
+      zustand.sonderTyp = wert || '';
+      zustand.sonderWert = '';
+      ddSonder.setzeRand((SONDER.find(s=>s.wert===wert)||{}).farbe || '');
+      baueUnterauswahl(wert);
+      pruefeVollstaentlichUndAktualisiere();
+    }
+  });
+}
+function entferneSonderauswahl(beibehalten){
+  const zeile = document.getElementById('zeileSonder');
+  zeile.innerHTML = '';
+  ddSonder = null; ddUnter = null;
+  zustand.sonderTyp = ''; zustand.sonderWert = '';
+}
+function baueUnterauswahl(typ){
+  if (ddUnter) { ddUnter.element.closest('.feld').remove(); ddUnter = null; }
+  if (!typ || typ === 'Merkmal') { pruefeVollstaentlichUndAktualisiere(); return; }
+  const zeile = document.getElementById('zeileSonder');
+
+  if (typ === 'BUT' || typ === 'LRS'){
+    ddUnter = erstelleDropdown(zeile, {
+      label: typ, placeholder: '--- bitte wählen ---',
+      optionen: [{wert:'Ja'},{wert:'Nein'}],
+      onChange(arr){ zustand.sonderWert = arr[0] || ''; pruefeVollstaentlichUndAktualisiere(); }
+    });
+  } else if (typ === 'Nachteilsausgleich'){
+    ddUnter = erstelleDropdown(zeile, {
+      label: 'Nachteilsausgleich', placeholder: '--- bitte wählen ---',
+      optionen: [{wert:'Gewährt'},{wert:'Aufgehoben'}],
+      onChange(arr){ zustand.sonderWert = arr[0] || ''; pruefeVollstaentlichUndAktualisiere(); }
+    });
+  } else if (typ === 'Förderbedarf'){
+    ddUnter = erstelleDropdown(zeile, {
+      label: 'Förderbedarf', placeholder: '--- bitte wählen ---', multi: true,
+      optionen: FOERDER.map(f=>({wert:f})),
+      onChange(arr){ zustand.sonderWert = arr.join("; "); pruefeVollstaentlichUndAktualisiere(); }
+    });
+  }
+}
+function pruefeVollstaentlichUndAktualisiere(){ pruefeVollstaendig(); }
+
+/* --- Vollstaendigkeitspruefung: Infofeld + Anhang freischalten --- */
+function istVollstaendig(){
+  if (!zustand.art || !zustand.datum) return false;
+  if (zustand.schuelerAuswahl.length === 0) return false;
+  if (zustand.art === 'Schülerbesonderheit'){
+    if (!zustand.sonderTyp) return false;
+    if (zustand.sonderTyp !== 'Merkmal' && !zustand.sonderWert) return false;
+    // Merkmal: Schueler bereits ueber Feld Schueler gewaehlt
+  }
+  return true;
+}
+function pruefeVollstaendig(){
+  const block = document.getElementById('infoBlock');
+  if (istVollstaendig()){
+    block.classList.add('sichtbar');
+    buttonsZeigen(); // bei BUT/Förderbedarf/LRS/Nachteilsausgleich: Buttons sofort, Infofeld optional
+  }
+}
+
+/* --- Infofeld / Buttons --- */
+const infofeld = document.getElementById('infofeld');
+function infofeldOptional(){
+  return zustand.art === 'Schülerbesonderheit' &&
+    ['BUT','Förderbedarf','LRS','Nachteilsausgleich'].includes(zustand.sonderTyp);
+}
+function buttonsZeigen(){
+  const btnZeile = document.getElementById('btnZeile');
+  if ((infofeldOptional() && istVollstaendig()) || infofeld.value.trim().length >= 5)
+    btnZeile.classList.add('sichtbar');
+  else
+    btnZeile.classList.remove('sichtbar');
+  aktualisiereInfofeldHinweis();
+}
+infofeld.addEventListener('input', buttonsZeigen);
+
+/* --- Dateianhang --- */
+const anhangInput = document.getElementById('anhangInput');
+const MAX_DATEIGROESSE = 5 * 1024 * 1024; // 5 MB
+let anhangStatusTimer = null;
+function setzeAnhangStatus(){
+  const st = document.getElementById('anhangStatus');
+  if (zustand.anhangFehler){
+    st.className = 'rot'; st.textContent = 'Datei zu groß!';
+    clearTimeout(anhangStatusTimer);
+    anhangStatusTimer = setTimeout(()=>{ // 3 Sekunden anzeigen, dann verschwinden
+      zustand.anhangFehler = false;
+      setzeAnhangStatus();
+    }, 3000);
+  } else if (zustand.anhaenge.length){
+    st.className = 'gruen';
+    st.textContent = zustand.anhaenge.length + (zustand.anhaenge.length === 1 ? ' Datei ausgewählt' : ' Dateien ausgewählt');
+  } else {
+    st.className = 'grau'; st.textContent = 'Keine Datei ausgewählt';
+  }
+}
+anhangInput.addEventListener('change', ()=>{
+  const erlaubt = ['pdf','doc','docx','jpg','jpeg','png'];
+  for (const datei of anhangInput.files){
+    const ext = datei.name.split('.').pop().toLowerCase();
+    if (!erlaubt.includes(ext)){
+      zeigeMeldung('Dateiformat nicht zulässig: ' + datei.name + ' (nur PDF, Word, JPEG, PNG)', {fehler:true, dauerhaft:true});
+      continue;
+    }
+    if (datei.size >= MAX_DATEIGROESSE){
+      zustand.anhangFehler = true; // roter Hinweis "Datei zu groß!" – Datei wird nicht übernommen
+      setzeAnhangStatus();
+      zeigeMeldung('Datei zu groß (max. 5 MB): ' + datei.name, {fehler:true});
+      continue;
+    }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      zustand.anhaenge.push({ name: datei.name, typ: datei.type, inhalt: reader.result.split(',')[1] });
+      zustand.anhangFehler = false;
+      zeigeAnhangListe();
+    };
+    reader.readAsDataURL(datei);
+  }
+  anhangInput.value = '';
+});
+function zeigeAnhangListe(){
+  const ul = document.getElementById('anhangListe');
+  ul.innerHTML = '';
+  zustand.anhaenge.forEach((a,i)=>{
+    const li = el('li', {}, ul);
+    const kb = Math.round((a.inhalt.length * 3/4) / 1024);
+    el('span', {}, li).textContent = a.name + ' (' + kb + ' KB)';
+    const b = el('button', {type:'button'}, li); b.textContent = '✕';
+    b.addEventListener('click', ()=>{ zustand.anhaenge.splice(i,1); zeigeAnhangListe(); });
+  });
+  setzeAnhangStatus();
+}
+function aktualisiereInfofeldHinweis(){
+  const hw = document.getElementById('infofeldHinweis');
+  if (!hw) return;
+  hw.textContent = infofeldOptional() ? ' * optional' : ' * mindestens 5 Zeichen';
+}
+
+/* --- Speichern --- */
+let speichereLaeuft = false;
+document.getElementById('btnSpeichern').addEventListener('click', async ()=>{
+  if (speichereLaeuft) return; // Doppelklick waehrend des Speicherns wird ignoriert
+  const btnSpeichern = document.getElementById('btnSpeichern');
+  if (!istVollstaendig()){ zeigeMeldung('Bitte alle Pflichtangaben vervollständigen.', {fehler:true, dauerhaft:true}); return; }
+  if (!infofeldOptional() && infofeld.value.trim().length < 5){ zeigeMeldung('Infofeld muss mindestens 5 Zeichen enthalten.', {fehler:true, dauerhaft:true}); return; }
+  const istMerkmal = zustand.sonderTyp === 'Merkmal';
+  const daten = {
+    lehrerkuerzel: zustand.kuerzel,
+    schulfach: zustand.schulfach,
+    art: zustand.art,
+    datum: zustand.datum,
+    klasse: zustand.klasse,
+    schueler: zustand.art === 'Schülerbesonderheit' && istMerkmal ? [] : zustand.schuelerAuswahl,
+    sonderTyp: zustand.art === 'Schülerbesonderheit' ? zustand.sonderTyp : '',
+    sonderWert: zustand.art === 'Schülerbesonderheit' ? (istMerkmal ? '' : zustand.sonderWert) : '',
+    merkmalSchueler: istMerkmal ? zustand.schuelerAuswahl : [],
+    nachricht: infofeld.value,
+    anhaenge: zustand.anhaenge,
+    eintragId: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) // gegen Doppeleintraege
+  };
+  speichereLaeuft = true;
+  btnSpeichern.disabled = true;
+  btnSpeichern.textContent = 'Speichere …';
+  zeigeMeldung('Bitte warten! … Speichervorgang kann bis zu 30 s dauern', {blinkend:false, dauerhaft:true});
+  // Verifizierung: Ist der Eintrag wirklich im Sheet angekommen?
+  // (Die POST-Antwort kann durch Googles Redirect unlesbar sein – der Eintrag ist dann trotzdem schon gespeichert.)
+  async function eintragVerifizieren(){
+    try {
+      const vres = await fetch(SCRIPT_URL + '?aktion=letzter&kuerzel=' + encodeURIComponent(daten.lehrerkuerzel));
+      const v = JSON.parse(await vres.text());
+      if (!v.gefunden) return false;
+      if (v.art !== daten.art) return false;
+      if (alsIsoDatum(v.datum) !== daten.datum) return false;
+      const schuelerPassend = (daten.schueler || []).length === 0 ||
+        (daten.schueler || []).some(s => (v.schueler || '').indexOf(s) !== -1);
+      if (!schuelerPassend) return false;
+      // Zeitstempel muss frisch sein (TT.MM.JJJJ HH:MM:SS)
+      const m = String(v.zeitstempel || '').match(/(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2}):(\d{2})/);
+      if (m){
+        const t = new Date(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]);
+        if (Date.now() - t.getTime() > 3 * 60 * 1000) return false; // älter als 3 Minuten
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+  async function warteVerifizieren(versuche){
+    for (let i = 0; i < versuche; i++){
+      if (await eintragVerifizieren()) return true;
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    return false;
+  }
+  try {
+    // 1) POST senden – Antwort ggf. unlesbar, deshalb danach verifizieren
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 60000);
+    try {
+      await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(daten), signal: ctrl.signal });
+    } catch (e1) { /* Antwort unlesbar – Verifizierung entscheidet */ }
+    finally { clearTimeout(timer); }
+    if (await warteVerifizieren(3)) {
+      zeigeMeldung('Eintrag wurde gespeichert');
+    } else {
+      // 2) GET-Fallback (nur ohne große Anhänge möglich) und erneut verifizieren
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(daten))))
+        .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+      const url = SCRIPT_URL + '?aktion=speichern&daten=' + encodeURIComponent(b64);
+      if (url.length <= 7500) {
+        try { await fetch(url); } catch (e2) {}
+        if (await warteVerifizieren(3)) {
+          zeigeMeldung('Eintrag wurde gespeichert');
+        } else {
+          throw new Error('Der Eintrag konnte nicht gespeichert werden. Bitte prüfen Sie die Internetverbindung und versuchen Sie es erneut.');
+        }
+      } else {
+        // Eintrag inkl. Anhang zu groß für GET: POST noch einmal versuchen und länger warten
+        try { await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(daten) }); } catch (e3) {}
+        if (await warteVerifizieren(5)) {
+          zeigeMeldung('Eintrag wurde gespeichert');
+        } else {
+          throw new Error('Die Übertragung hat gerade nicht geklappt. Bitte laden Sie die Seite neu (Strg+F5) und versuchen Sie es erneut – der Eintrag ist dann noch im Formular.');
+        }
+      }
+    }
+    letzteEintraege.unshift(daten);
+    if (letzteEintraege.length > 5) letzteEintraege.pop();
+    zeigeLetzteEintraege();
+    formularZuruecksetzen();
+  } catch(err){
+    if (err.name === 'AbortError'){
+      zeigeMeldung('Das Speichern dauert zu lange. Bitte Internet prüfen – vor dem erneuten Versuch prüfen, ob der Eintrag nicht doch schon angekommen ist.', {fehler:true, dauerhaft:true});
+    } else {
+      zeigeMeldung('Fehler beim Speichern: ' + err.message, {fehler:true, dauerhaft:true});
+    }
+  } finally {
+    speichereLaeuft = false;
+    btnSpeichern.disabled = false;
+    btnSpeichern.textContent = 'Eintrag Speichern';
+  }
+});
+
+/* --- Loeschen --- */
+document.getElementById('btnLoeschen').addEventListener('click', ()=>{
+  if (confirm('Eintrag wirklich löschen? Alle Eingaben gehen verloren.')){
+    formularZuruecksetzen();
+    zeigeMeldung('Eintrag wurde verworfen');
+  }
+});
+
+function formularZuruecksetzen(){
+  ['zeileLehrer','zeileArt','zeileDatum','zeileSonder'].forEach(id=>document.getElementById(id).innerHTML='');
+  ddArt = null; ddSonder = null; ddUnter = null; ddSchueler = null;
+  zustand = { modus:'eingeben', kuerzel:"", schulfach:"", art:"", artFarbe:"",
+    sbFreigeschaltet:zustand.sbFreigeschaltet, sonderTyp:"", sonderWert:"",
+    schuelerAuswahl:[], datum:"", klasse:"", anhaenge:[], schuelerBlinkAus:false };
+  infofeld.value = '';
+  document.getElementById('infoBlock').classList.remove('sichtbar');
+  document.getElementById('btnZeile').classList.remove('sichtbar');
+  document.getElementById('anhangListe').innerHTML = '';
+  zustand.anhangFehler = false;
+  clearTimeout(anhangStatusTimer);
+  setzeAnhangStatus();
+  aktualisiereInfofeldHinweis();
+  baueLehrerZeile();
+}
+function zeigeLetzteEintraege(){
+  document.getElementById('letzteEintraege').classList.remove('versteckt');
+  const box = document.getElementById('letzteListe');
+  box.innerHTML = '';
+  letzteEintraege.forEach(e=>{
+    const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[e.art==='Schülerbesonderheit'?'blau':({Inklusion:'gruen','Vorfallmelder':'rot','Elterngespräch':'gelb'}[e.art])]||'')}, box);
+    karte.innerHTML = '<div class="zeile-art">' + e.art + '</div>' +
+      '<div>' + isoZuDeutsch(e.datum) + '</div>' +
+      '<div>' + e.lehrerkuerzel + ' (' + e.schulfach + ') (' + e.klasse + ') – ' + e.schueler.join('; ') + '</div>' +
+      '<div>' + e.nachricht.replace(/</g,'&lt;') + '</div>';
+  });
+}
+
+/* ================= ABFRAGEMODUS ================= */
+let ddSuchWert = null;
+const suchenNachSel = document.getElementById('suchenNachSel');
+
+function startSucheModus(){
+  zustand.modus = 'abfragen';
+  document.getElementById('eingabeModus').classList.add('versteckt');
+  document.getElementById('sucheModus').classList.remove('versteckt');
+  document.getElementById('suchKriteriumZeile').classList.add('sichtbar');
+  document.getElementById('suchWertZeile').innerHTML = '';
+  document.getElementById('suchBtnZeile').classList.remove('sichtbar');
+  suchenNachSel.value = '';
+}
+suchenNachSel.addEventListener('change', ()=>{
+  const wert = suchenNachSel.value;
+  const zeile = document.getElementById('suchWertZeile');
+  zeile.innerHTML = ''; ddSuchWert = null;
+  document.getElementById('ergebnisListe').innerHTML = '';
+  document.getElementById('schuelerIdFeld').classList.remove('sichtbar');
+  document.getElementById('berichtBtnZeile').classList.add('versteckt');
+  if (!wert) { document.getElementById('suchBtnZeile').classList.remove('sichtbar'); return; }
+
+  if (wert === 'schueler'){
+    ddSuchWert = erstelleDropdown(zeile, {
+      label: 'Schülerliste', placeholder: '--- bitte wählen ---',
+      optionen: SCHUELERLISTE.map(s=>({wert:s})),
+      onChange(arr){ pruefeSuchButtons(); }
+    });
+    const f = el('div', {class:'feld'}, zeile);
+    el('label', {class:'feldlabel', for:'eintragAbInp'}, f).textContent = 'Einträge ab:';
+    el('input', {type:'date', id:'eintragAbInp'}, f);
+  } else {
+    ddSuchWert = erstelleDropdown(zeile, {
+      label: 'Art des Eintrags', placeholder: '--- bitte wählen ---',
+      optionen: ARTE_SUCHE.map(a=>({wert:a.wert, farbe:a.farbe})),
+      onChange(arr){
+        ddSuchWert.setzeRand((ARTE_SUCHE.find(a=>a.wert===arr[0])||{}).farbe || '');
+        pruefeSuchButtons();
+      }
+    });
+    const f = el('div', {class:'feld'}, zeile);
+    el('label', {class:'feldlabel', for:'eintragAbInp'}, f).textContent = 'Einträge ab:';
+    el('input', {type:'date', id:'eintragAbInp'}, f);
+  }
+  document.getElementById('suchBtnZeile').classList.add('sichtbar');
+  pruefeSuchButtons();
+});
+function pruefeSuchButtons(){
+  const ok = ddSuchWert && ddSuchWert.wert().length > 0;
+  document.getElementById('btnSuchen').disabled = !ok;
+}
+
+document.getElementById('btnVerwerfen').addEventListener('click', ()=>{
+  suchenNachSel.value = '';
+  document.getElementById('suchWertZeile').innerHTML = ''; ddSuchWert = null;
+  document.getElementById('suchBtnZeile').classList.remove('sichtbar');
+  document.getElementById('ergebnisListe').innerHTML = '';
+  document.getElementById('schuelerIdFeld').classList.remove('sichtbar');
+  document.getElementById('berichtBtnZeile').classList.add('versteckt');
+});
+
+document.getElementById('btnSuchen').addEventListener('click', async ()=>{
+  const modus = suchenNachSel.value;
+  const wert = ddSuchWert ? ddSuchWert.wert()[0] : '';
+  if (!modus || !wert){ zeigeMeldung('Bitte Suchkriterium und Wert auswählen.', {fehler:true, dauerhaft:true}); return; }
+  const ab = document.getElementById('eintragAbInp') ? document.getElementById('eintragAbInp').value : '';
+  const btnSuchen = document.getElementById('btnSuchen');
+  btnSuchen.disabled = true;
+  btnSuchen.textContent = 'Suche läuft …';
+  zeigeMeldung('Bitte warten! … Suchvorgang kann bis zu 15 s dauern', {blinkend:false, dauerhaft:true});
+  try {
+    const url = SCRIPT_URL + '?modus=' + encodeURIComponent(modus) + '&wert=' + encodeURIComponent(wert); // Filterung 'ab' clientseitig
+    const ctrl = new AbortController();                    // Timeout, damit die Meldung nicht endlos haengt
+    const timer = setTimeout(()=>ctrl.abort(), 30000);
+    let res;
+    try { res = await fetch(url, {signal: ctrl.signal}); }
+    finally { clearTimeout(timer); }
+    const antwortText = await res.text();
+    let json;
+    try {
+      json = JSON.parse(antwortText);
+    } catch (parseErr){
+      // Das Script hat eine HTML-Seite statt JSON gesendet (meist: URL passt nicht zur Bereitstellung)
+      throw new Error('Das Script hat keine gültige Antwort gesendet. Bitte prüfen: (1) Stimmt die Web-App-URL in der HTML (SCRIPT_URL) mit der aktuellen Bereitstellung überein? (2) Ist der Zugriff auf "Jeder mit Google-Konto" gesetzt?');
+    }
+    if (json.fehler) throw new Error(json.fehler);
+    zeigeErgebnisse(json, modus);
+    document.getElementById('meldung').className = '';
+  } catch(err){
+    if (err.name === 'AbortError'){
+      zeigeMeldung('Die Abfrage dauert zu lange. Bitte Internetverbindung prüfen und erneut suchen.', {fehler:true, dauerhaft:true});
+    } else {
+      zeigeMeldung('Fehler bei der Abfrage: ' + err.message, {fehler:true, dauerhaft:true});
+    }
+  } finally {
+    btnSuchen.disabled = false;
+    btnSuchen.textContent = 'Suchen';
+  }
+});
+
+function zeigeErgebnisse(json, modus){
+  const box = document.getElementById('ergebnisListe');
+  box.innerHTML = '';
+  document.getElementById('schuelerIdFeld').classList.remove('sichtbar');
+  const liste = json.treffer || json;
+  let treffer = Array.isArray(liste) ? liste : [];
+  const ab = document.getElementById('eintragAbInp') ? document.getElementById('eintragAbInp').value : '';
+  if (ab) treffer = treffer.filter(t => alsIsoDatum(t.datum) >= ab); // beide Datumsformate korrekt vergleichen
+  treffer.sort((a,b)=> alsIsoDatum(b.datum).localeCompare(alsIsoDatum(a.datum))); // absteigend: neueste Einträge oben
+
+  letzteTreffer = treffer;
+  document.getElementById('berichtBtnZeile').classList.toggle('versteckt', treffer.length === 0);
+  if (treffer.length === 0){
+    const idBlock = modus === 'schueler' && json.schuelerId && Object.keys(json.schuelerId).length;
+    box.innerHTML = '<div class="hinweis">' +
+      (idBlock ? "Keine weiteren Einträge -- Angaben siehe Feld 'Schüler-ID'"
+               : 'Keine Einträge gefunden.') + '</div>';
+  } else {
+    const karteEintrag = (t)=>{
+      const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
+      const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, box);
+      const d = isoZuDeutsch(t.datum);
+      karte.innerHTML =
+        '<div class="zeile-art">' + (t.art||'') + '</div>' +
+        '<div>' + d + '</div>' +
+        '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
+          (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>' +
+        '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' +
+        (t.anhaenge ? '<div><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
+    };
+    if (modus === 'schueler'){
+      // Nach Kategorien geordnet, jeweils mit Anzahl in Klammern: Vorfallmelder, Inklusion, Elterngespraech
+      const gruppen = {};
+      treffer.forEach(t=>{ (gruppen[t.art] = gruppen[t.art] || []).push(t); });
+      KATEGORIE_REIHENFOLGE.forEach(kat=>{
+        if (!gruppen[kat] || !gruppen[kat].length) return;
+        const farbe = (ARTE.find(a=>a.wert===kat)||{}).farbe || '';
+        const h = el('div', {class:'kat-kopf ' + (FARBE_KLASSE[farbe] || '')}, box);
+        const n = gruppen[kat].length;
+        h.textContent = kat + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+        gruppen[kat].forEach(karteEintrag);
+      });
+    } else {
+      treffer.forEach(karteEintrag);
+    }
+  }
+  // Schueler-ID
+  if (modus === 'schueler' && json.schuelerId){
+    const id = json.schuelerId;
+    const zeilen = [];
+    function idZeile(symbol, label, obj){
+      if (!obj || !obj.wert) return;
+      const d = isoZuDeutsch(obj.datum);
+      zeilen.push('<div><span class="idLabel">' + symbol + ' ' + label + ':</span> ' + obj.wert +
+        (d ? ' <span class="idInfo">(' + d + ')</span>' : '') +
+        (obj.info ? ' <span class="idInfo">' + obj.info.replace(/</g,'&lt;') + '</span>' : '') + '</div>');
+    }
+    idZeile('📚','BUT', id.but);
+    idZeile('🧩','Förderbedarf', id.foerderbedarf);
+    idZeile('✍️📖','LRS', id.lrs);
+    idZeile('🕒','Nachteilsausgleich', id.nachteilsausgleich);
+    if (id.merkmale && id.merkmale.length){
+      id.merkmale.forEach(mk=>{
+        const d = isoZuDeutsch(mk.datum);
+        zeilen.push('<div><span class="idLabel">◉ Merkmal:</span> ' +
+          (d ? '<span class="idInfo">(' + d + ')</span> ' : '') +
+          '<span class="idInfo">' + (mk.info||'').replace(/</g,'&lt;') + '</span></div>');
+      });
+    }
+    if (zeilen.length){
+      document.getElementById('schuelerIdInhalt').innerHTML = zeilen.join('');
+      document.getElementById('schuelerIdFeld').classList.add('sichtbar');
+    }
+  }
+}
+
+/* ================= Bericht drucken (PDF) ================= */
+const KATEGORIE_REIHENFOLGE = ['Vorfallmelder', 'Inklusion', 'Elterngespräch'];
+
+/* Stile des Berichts fuer den eigenstaendigen Tab (iOS) */
+const REPORT_CSS = `
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Yu Gothic', 'YuGothic', 'Segoe UI', sans-serif; font-size: 10.5pt; color: #111; background: #fff; max-width: 180mm; margin: 0 auto; padding: 8mm 4mm; }
+  #druckKopfZeile { display: flex; justify-content: space-between; align-items: flex-start; }
+  #druckLinks { flex: 1; padding-right: 6mm; }
+  #druckLogo { width: 50mm; height: 50mm; flex: none; }
+  #druckLogo svg { width: 100%; height: 100%; }
+  #druckCopyright { font-size: 8pt; color: #9aa4b0; }
+  #druckKopf { margin-top: 2mm; }
+  #druckKopf h1 { font-size: 20pt; margin-bottom: 2mm; color: #2f4a68; }
+  #druckMeta { font-size: 10pt; color: #444; line-height: 1.55; }
+  #druckSchueler { margin: 5mm 0 6mm 0; }
+  #druckSchueler h2 { font-size: 13pt; margin-bottom: 2mm; }
+  #druckSchueler ul { margin-left: 6mm; }
+  .druck-kat { font-size: 13pt; font-weight: bold; margin: 5mm 0 3mm 0; padding-bottom: 1mm; border-bottom: 0.5mm solid #c8d4e0; page-break-after: avoid; }
+  .druck-kat.k-gruen { color: #15803d; } .druck-kat.k-rot { color: #dc2626; }
+  .druck-kat.k-gelb { color: #a16207; } .druck-kat.k-blau { color: #2563eb; }
+  .druck-eintrag { border: 1px solid #c0c8d2; border-left: 1.5mm solid #999; border-radius: 2mm; padding: 3mm 4mm; margin-bottom: 4mm; page-break-inside: avoid; line-height: 1.45; }
+  .druck-eintrag .d-art { font-weight: bold; }
+  .druck-eintrag.k-gruen { border-left-color: #16a34a; } .druck-eintrag.k-gruen .d-art { color: #15803d; }
+  .druck-eintrag.k-rot { border-left-color: #dc2626; } .druck-eintrag.k-rot .d-art { color: #dc2626; }
+  .druck-eintrag.k-gelb { border-left-color: #eab308; } .druck-eintrag.k-gelb .d-art { color: #a16207; }
+  .druck-eintrag.k-blau { border-left-color: #2563eb; } .druck-eintrag.k-blau .d-art { color: #2563eb; }
+  #iosHinweis { background: #eff6ff; color: #1e3a5f; border: 1px solid #93c5fd; border-radius: 3mm; padding: 3mm 4mm; font-size: 9.5pt; margin-bottom: 5mm; }
+  @page { size: A4; margin: 15mm; }
+`;
+
+document.getElementById('btnBericht').addEventListener('click', ()=>{
+  const modus = suchenNachSel.value;
+  const suchWert = ddSuchWert ? ddSuchWert.wert()[0] : '';
+  if (!modus || !suchWert || !letzteTreffer.length){
+    zeigeMeldung('Keine Einträge für den Bericht vorhanden. Bitte zuerst suchen.', {fehler:true});
+    return;
+  }
+  const ab = document.getElementById('eintragAbInp') ? document.getElementById('eintragAbInp').value : '';
+  const heute = new Date();
+  const heuteIso = heute.getFullYear() + '-' + String(heute.getMonth()+1).padStart(2,'0') + '-' + String(heute.getDate()).padStart(2,'0');
+  const aktuelleKlasse = berechneKlasse(heuteIso); // "jetzige Klasse" am Tag des Ausdrucks
+
+  const druck = document.getElementById('druckBereich');
+  druck.innerHTML = '';
+
+  // Kopfzeile (nur erste Seite): links Copyright + Berichtsblock, rechts Logo – beide auf gleicher Hoehe
+  const kopfZeile = el('div', {id:'druckKopfZeile'}, druck);
+  const linksBox = el('div', {id:'druckLinks'}, kopfZeile);
+  const copy = el('div', {id:'druckCopyright'}, linksBox);
+  copy.textContent = '\u00A9 LogBuch_V26/27 Dipl.-Ing Rachid Harbi';
+  const logoBox = el('div', {id:'druckLogo', 'aria-hidden':'true'}, kopfZeile);
+  logoBox.appendChild(document.querySelector('#druckLogoVorlage svg').cloneNode(true));
+
+
+  // Kopf: Suchparameter + Ausdruckdatum + "Einträge ab" nur wenn ein Datum gewählt ist
+  let meta = '<strong>Suchkriterium:</strong> ' + (modus==='schueler' ? 'Schüler' : 'Art des Eintrags') +
+             ' = ' + suchWert.replace(/</g,'&lt;') + '<br>' +
+             '<strong>Ausgedruckt am:</strong> ' + isoZuDeutsch(heuteIso) + '<br>';
+  if (ab) meta += '<strong>Einträge ab:</strong> ' + isoZuDeutsch(ab) + '<br>';
+  meta += '<strong>Anzahl der Einträge:</strong> ' + letzteTreffer.length;
+  const kopf = el('div', {id:'druckKopf'}, linksBox);
+  kopf.innerHTML = '<h1>LogBuch-Bericht</h1><div id="druckMeta">' + meta + '</div>';
+
+  // Schüler (nur bei Schülersuche) / jetzige Klasse
+  const schBox = el('div', {id:'druckSchueler'}, linksBox);
+  if (modus === 'schueler'){
+    schBox.innerHTML = '<h2>Schüler: ' + suchWert.replace(/</g,'&lt;') +
+                       ' &ndash; jetzige Klasse: ' + aktuelleKlasse + '</h2>';
+  } else {
+    schBox.innerHTML = '<h2>Jetzige Klasse: ' + aktuelleKlasse + '</h2>';
+  }
+
+  // Einträge ohne Schüler-ID, geordnet untereinander
+  const eintragKarte = (t)=>{
+    const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
+    const karte = el('div', {class:'druck-eintrag ' + (FARBE_KLASSE[farbe] || '')}, druck);
+    const d = (t.datum && t.datum.indexOf('-') > -1) ? isoZuDeutsch(t.datum) : (t.datum || '');
+    karte.innerHTML =
+      '<div class="d-art">' + (t.art || '') + '</div>' +
+      '<div>' + d + '</div>' +
+      '<div>' + (t.lehrerkuerzel || '') + ' (' + (t.schulfach || '') + ') (' + (t.klasse || '') + ')' +
+        (modus === 'art' && t.schueler ? ' &ndash; ' + t.schueler.replace(/</g,'&lt;') : '') + '</div>' +
+      '<div>' + (t.nachricht || '').replace(/</g,'&lt;') + '</div>';
+  };
+
+  if (modus === 'schueler'){
+    // Nach Kategorien geordnet: Vorfallmelder, Inklusion, Elterngespräch (innerhalb: Datum absteigend)
+    const liste = letzteTreffer.slice();
+    liste.sort((a,b)=> KATEGORIE_REIHENFOLGE.indexOf(a.art) - KATEGORIE_REIHENFOLGE.indexOf(b.art));
+    const anzahl = {};
+    liste.forEach(t=>{ anzahl[t.art] = (anzahl[t.art] || 0) + 1; });
+    let aktuelleKat = null;
+    liste.forEach(t=>{
+      if (t.art !== aktuelleKat){
+        aktuelleKat = t.art;
+        const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
+        const h = el('h2', {class:'druck-kat ' + (FARBE_KLASSE[farbe] || '')}, druck);
+        const n = anzahl[t.art];
+        h.textContent = t.art + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+      }
+      eintragKarte(t);
+    });
+  } else {
+    // Art-Suche: chronologisch absteigend untereinander auflisten
+    letzteTreffer.forEach(eintragKarte);
+  }
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS){
+    // iOS unterstuetzt window.print() nicht: Bericht als eigenstaendige Datei im neuen Tab oeffnen
+    const hinweis = '<div id="iosHinweis"><strong>PDF speichern (iPhone/iPad):</strong> Teilen-Symbol ' +
+      '(&#8593;) &rarr; Optionen / &bdquo;Als PDF sichern&ldquo; (alternativ: Drucken &rarr; Vorschau mit ' +
+      'zwei Fingern aufziehen).</div>';
+    const htmlDokument = '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      '<title>LogBuch-Bericht</title><style>' + REPORT_CSS + '</style></head><body>' +
+      hinweis + druck.innerHTML + '</body></html>';
+    const blobUrl = URL.createObjectURL(new Blob([htmlDokument], {type: 'text/html'}));
+    window.open(blobUrl, '_blank');
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 120000);
+    zeigeMeldung('Bericht im neuen Tab geöffnet → Teilen-Symbol für PDF.');
+  } else {
+    setTimeout(()=>window.print(), 150); // Druckdialog oeffnet, Ausgabe als PDF moeglich
+  }
+});
+</script>
+</body>
+</html>
