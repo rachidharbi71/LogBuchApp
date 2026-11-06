@@ -1809,9 +1809,7 @@ document.getElementById('btnBericht').addEventListener('click', ()=>{
 
 
   // Kopf: Suchparameter + Ausdruckdatum + "Einträge ab" nur wenn ein Datum gewählt ist
-  let meta = '<strong>Suchkriterium:</strong> ' + (modus==='schueler' ? 'Schüler' : 'Art des Eintrags') +
-             ' = ' + suchWert.replace(/</g,'&lt;') + '<br>' +
-             '<strong>Ausgedruckt am:</strong> ' + isoZuDeutsch(heuteIso) + '<br>';
+  let meta = '<strong>Ausgedruckt am:</strong> ' + isoZuDeutsch(heuteIso) + '<br>';
   if (ab) meta += '<strong>Einträge ab:</strong> ' + isoZuDeutsch(ab) + '<br>';
   meta += '<strong>Anzahl der Einträge:</strong> ' + letzteTreffer.length;
   const kopf = el('div', {id:'druckKopf'}, linksBox);
