@@ -4,19 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LogBuch</title>
-<!-- ===== PWA / iPhone (Home-Bildschirm-App) ===== -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="LogBuch">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f4a68">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
-}
-</script>
-
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPgogIDxkZWZzPgogICAgPCEtLSBIaW50ZXJncnVuZCBkZXMgQ2FudmFzIC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmMmY2ZmIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTNlY2Y2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgoKICAgIDwhLS0gR2xhcy1HcnVuZGZsYWVjaGUgLS0+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImdsYXNzIiBjeD0iMC4zNSIgY3k9IjAuMjgiIHI9IjAuOTUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC44NSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNDUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC40MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkZmU5ZjUiIHN0b3Atb3BhY2l0eT0iMC41NSIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KCiAgICA8IS0tIFNwZWt1bGFyZXIgR2xhbnogb2JlbiBsaW5rcyAtLT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ic3BlYyIgeDE9IjAiIHkxPSIwIiB4Mj0iMC44IiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjkiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMC4xNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KCiAgICA8IS0tIFNjaGxhZ3NjaGF0dGVuIC0tPgogICAgPGZpbHRlciBpZD0ic29mdCIgeD0iLTQwJSIgeT0iLTQwJSIgd2lkdGg9IjE4MCUiIGhlaWdodD0iMTgwJSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSIxOCIgc3RkRGV2aWF0aW9uPSIyOCIgZmxvb2QtY29sb3I9IiMzZDVhODAiIGZsb29kLW9wYWNpdHk9IjAuMjgiLz4KICAgIDwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0iYmx1ckJsb2IiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQ2Ii8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJibHVyU20iPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYiLz48L2ZpbHRlcj4KCiAgICA8IS0tIEthdGVnb3JpZWZhcmJlbiAtLT4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZ0dyZWVuIiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNGFkZTgwIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTZhMzRhIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnUmVkIiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZjg3MTcxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGMyNjI2Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnWWVsbG93IiBjeD0iMC4zNSIgY3k9IjAuMyIgcj0iMC45Ij4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmRlMDQ3Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZWFiMzA4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnQmx1ZSIgY3g9IjAuMzUiIGN5PSIwLjMiIHI9IjAuOSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzYwYTVmYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYm9vayIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkYmU3ZjMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJvb2tTcGluZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiOWNjZTAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4ZmE5YzQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgoKICA8IS0tIEhpbnRlcmdydW5kIC0tPgogIDxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHJ4PSIxMjAiIGZpbGw9InVybCgjYmcpIi8+CgogIDwhLS0gPT09PT0gS3JlaXMtTG9nbyA9PT09PSAtLT4KICA8ZyBmaWx0ZXI9InVybCgjc29mdCkiPgogICAgPCEtLSBHbGFzLUtyZWlzIC0tPgogICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMzAiIGZpbGw9InVybCgjZ2xhc3MpIi8+CiAgICA8IS0tIEZhcmItQmxvYnMgaGludGVyIEdsYXMgKEdsYXNzbW9ycGhpc20pIC0tPgogICAgPGcgY2xpcC1wYXRoPSJjaXJjbGUoMzMwcHggYXQgNTEyIDQ1MikiPgogICAgICA8Y2lyY2xlIGN4PSIzODAiIGN5PSIzMzAiIHI9IjE1MCIgZmlsbD0iIzIyYzU1ZSIgb3BhY2l0eT0iMC41NSIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSI2NTAiIGN5PSIzMDAiIHI9IjE0MCIgZmlsbD0iI2VmNDQ0NCIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSI2NjAiIGN5PSI2MDAiIHI9IjE1MCIgZmlsbD0iI2ZhY2MxNSIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8Y2lyY2xlIGN4PSIzNzAiIGN5PSI2MTAiIHI9IjE0NSIgZmlsbD0iIzNiODJmNiIgb3BhY2l0eT0iMC41MCIgZmlsdGVyPSJ1cmwoI2JsdXJCbG9iKSIvPgogICAgICA8IS0tIEZyb3N0ZWQgT3ZlcmxheSAtLT4KICAgICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMzAiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuMzAiLz4KICAgICAgPCEtLSBTcGVrdWxhcmVyIEdsYW56IC0tPgogICAgICA8ZWxsaXBzZSBjeD0iNDMwIiBjeT0iMzAwIiByeD0iMjMwIiByeT0iMTIwIiBmaWxsPSJ1cmwoI3NwZWMpIiBmaWx0ZXI9InVybCgjYmx1clNtKSIvPgogICAgPC9nPgogICAgPCEtLSBHbGFzLVJhbmQgLS0+CiAgICA8Y2lyY2xlIGN4PSI1MTIiIGN5PSI0NTIiIHI9IjMzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC44NSIgc3Ryb2tlLXdpZHRoPSIxMCIvPgogICAgPGNpcmNsZSBjeD0iNTEyIiBjeT0iNDUyIiByPSIzMTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMzUiIHN0cm9rZS13aWR0aD0iMyIvPgogIDwvZz4KCiAgPCEtLSA9PT09PSBTeW1ib2w6IE5vdGl6YnVjaCBtaXQgU3ByZWNoYmxhc2UgPT09PT0gLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTEyIDQ1MikiPgogICAgPCEtLSBOb3RpemJ1Y2ggLS0+CiAgICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgtNikiPgogICAgICA8cmVjdCB4PSItMTUwIiB5PSItMTA1IiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjIzMCIgcng9IjI2IiBmaWxsPSJ1cmwoI2Jvb2spIiBzdHJva2U9IiM5ZGI0Y2MiIHN0cm9rZS13aWR0aD0iNSIvPgogICAgICA8cmVjdCB4PSItMTUwIiB5PSItMTA1IiB3aWR0aD0iMzQiIGhlaWdodD0iMjMwIiByeD0iMTYiIGZpbGw9InVybCgjYm9va1NwaW5lKSIvPgogICAgICA8ZyBzdHJva2U9IiNjM2QzZTQiIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iLTUyIiB4Mj0iNzYiIHkyPSItNTIiLz4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iLTE0IiB4Mj0iNzYiIHkyPSItMTQiLz4KICAgICAgICA8bGluZSB4MT0iLTkyIiB5MT0iMjQiIHgyPSI0OCIgeTI9IjI0Ii8+CiAgICAgICAgPGxpbmUgeDE9Ii05MiIgeTE9IjYyIiB4Mj0iNzYiIHkyPSI2MiIvPgogICAgICA8L2c+CiAgICA8L2c+CiAgICA8IS0tIFNwcmVjaGJsYXNlIC0tPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODggLTkyKSI+CiAgICAgIDxwYXRoIGQ9Ik0gLTc4IC01MiBoMTU2IGEyNCAyNCAwIDAgMSAyNCAyNCB2NTIgYTI0IDI0IDAgMCAxIC0yNCAyNCBoLTk2IGwtMzggMzQgdi0zNCBoLTIyIGEyNCAyNCAwIDAgMSAtMjQgLTI0IHYtNTIgYTI0IDI0IDAgMCAxIDI0IC0yNCB6IgogICAgICAgICAgICBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuOTIiIHN0cm9rZT0iIzhmYTljNCIgc3Ryb2tlLXdpZHRoPSI1Ii8+CiAgICAgIDwhLS0gNCBLYXRlZ29yaWVucHVua3RlIC0tPgogICAgICA8Y2lyY2xlIGN4PSItNDIiIGN5PSIwIiByPSIxNyIgZmlsbD0idXJsKCNnR3JlZW4pIi8+CiAgICAgIDxjaXJjbGUgY3g9Ii0yIiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dSZWQpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjM4IiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dZZWxsb3cpIi8+CiAgICAgIDxjaXJjbGUgY3g9Ijc4IiAgY3k9IjAiIHI9IjE3IiBmaWxsPSJ1cmwoI2dCbHVlKSIvPgogICAgPC9nPgogIDwvZz4KCiAgPCEtLSA9PT09PSBTY2hyaWZ0enVnID09PT09IC0tPgogIDx0ZXh0IHg9IjYyNS40IiB5PSI5MDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgICAgZm9udC1mYW1pbHk9Ill1IEdvdGhpYywgU2Vnb2UgVUksIERlamFWdSBTYW5zLCBzYW5zLXNlcmlmIgogICAgICAgIGZvbnQtc2l6ZT0iMTA2IiBmb250LXdlaWdodD0iODAwIiBsZXR0ZXItc3BhY2luZz0iMiI+CiAgICA8dHNwYW4gZmlsbD0iIzE2YTM0YSI+TDwvdHNwYW4+PHRzcGFuIGZpbGw9IiMyZjRhNjgiPm9nPC90c3Bhbj48dHNwYW4gZmlsbD0iI2VhYjMwOCI+QjwvdHNwYW4+PHRzcGFuIGZpbGw9IiMyZjRhNjgiPnVjaDwvdHNwYW4+PHRzcGFuIGR4PSI1NSI+IDwvdHNwYW4+PHRzcGFuIGZpbGw9IiMxMTE4MjciIGZvbnQtc2l6ZT0iNTMiPkhBUkJJPC90c3Bhbj4KICA8L3RleHQ+CiAgPHRleHQgeD0iNTEyIiB5PSI5ODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgICAgZm9udC1mYW1pbHk9Ill1IEdvdGhpYywgU2Vnb2UgVUksIERlamFWdSBTYW5zLCBzYW5zLXNlcmlmIgogICAgICAgIGZvbnQtc2l6ZT0iMzQiIGZvbnQtd2VpZ2h0PSI1MDAiIGxldHRlci1zcGFjaW5nPSI2Ij4KICAgIDx0c3BhbiBmaWxsPSIjZGMyNjI2Ij5WT1JGQUxMTUVMREVSPC90c3Bhbj48dHNwYW4gZmlsbD0iIzZkODRhMCI+IFVORCA8L3RzcGFuPjx0c3BhbiBmaWxsPSIjMjU2M2ViIj5ET0tVTUVOVEFUSU9OPC90c3Bhbj4KICA8L3RleHQ+Cjwvc3ZnPg==">
 <style>
 /* ============ Grundgestaltung ============ */
@@ -180,6 +167,60 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 #btnZeile { display: none; justify-content: center; gap: 20px; margin-top: 16px; }
 #btnZeile.sichtbar { display: flex; }
 
+/* ============ Lernentwicklungsplanung: drei Felder ============ */
+#dreiFelder { display: flex; flex-direction: column; gap: 10px; }
+#dreiFelder .feld textarea { min-width: min(60ch, 90vw); }
+
+/* Dezentes rotes Blinken, solange ein Pflichtfeld leer bzw. zu kurz ist */
+@keyframes blinkPflicht {
+  0%, 100% { border-color: #cf8f8f; box-shadow: none; }
+  50% { border-color: #e0332e; box-shadow: 0 0 5px rgba(224,51,46,0.30); }
+}
+.feld-blink { animation: blinkPflicht 1.2s ease-in-out infinite; }
+/* Grüner Rahmen, sobald genug eingetragen ist – Blinken stoppt */
+.feld-ok { border-color: #16a34a !important; box-shadow: 0 0 4px rgba(22,163,74,0.35); animation: none; }
+
+/* --- Lernentwicklungsplanung: kursiv/ausgegraut + Ergänzungs-Editor --- */
+.lep-block { margin-top: 4px; }
+.lep-feld { cursor: pointer; padding: 3px 0; border-radius: 4px; }
+@keyframes lepToggleBlink {
+  0%, 100% { border-color: rgba(224,51,46,0.25); box-shadow: none; }
+  50% { border-color: #e0332e; box-shadow: 0 0 5px rgba(224,51,46,0.30); }
+}
+.lep-toggle {
+  color: #7cc7f7;              /* hellblau */
+  font-size: 14px; font-style: normal; user-select: none;
+  margin-left: 8px; padding: 0 6px; border-radius: 5px;
+  border: 1.5px solid rgba(224,51,46,0.25);
+  animation: lepToggleBlink 1.6s ease-in-out infinite; /* dezentes rot umrahmtes Blinken */
+}
+.lep-feld:hover { background: #f4f7fb; }
+.lep-label { font-weight: bold; color: #333; }
+.lep-inhalt { font-style: italic; color: #8a94a0; white-space: pre-wrap; }
+.lep-editor { margin-top: 4px; }
+.lep-ta { width: 100%; min-height: 6em; font-size: 15px; font-family: inherit; padding: 6px 8px;
+  border: 1.5px solid #7a8aa0; border-radius: 5px; background: #fff; color: #222; }
+.lep-controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px; }
+@keyframes lepHinweisBlink {
+  0%, 100% { background: rgba(234,138,28,0.14); border-color: rgba(224,51,46,0.35); box-shadow: none; }
+  50% { background: rgba(234,138,28,0.42); border-color: #e0332e; box-shadow: 0 0 6px rgba(224,51,46,0.30); }
+}
+.lep-hinweis {
+  padding: 5px 14px; border: 2px solid rgba(224,51,46,0.35); border-radius: 8px;
+  color: #9a3412; font-style: italic; font-size: 14px; cursor: pointer;
+  animation: lepHinweisBlink 1.4s ease-in-out infinite;
+}
+.lep-hinweis.bereit {
+  background: rgba(22,163,74,0.18); color: #15803d; font-weight: bold; font-style: normal;
+  border: 2px solid rgba(224,51,46,0.30); animation: lepBtnBlinkGruen 1.4s ease-in-out infinite;
+}
+@keyframes lepBtnBlinkGruen {
+  0%, 100% { border-color: rgba(224,51,46,0.30); box-shadow: none; }
+  50% { border-color: #e0332e; box-shadow: 0 0 6px rgba(224,51,46,0.35); }
+}
+.lep-verwerfen { background: #d32f2f; color: #fff; padding: 5px 14px; font-size: 13px; border-radius: 6px; }
+.lep-kuerzel { width: 10ch; padding: 5px 8px; border: 1.5px solid #7a8aa0; border-radius: 5px; font-size: 14px; }
+
 /* ============ Suchbereich ============ */
 #suchKriteriumZeile { display: none; }
 #suchKriteriumZeile.sichtbar { display: flex; }
@@ -202,6 +243,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .eintrag.k-rot .zeile-art { color: #dc2626; }
 .eintrag.k-gelb .zeile-art { color: #a16207; }
 .eintrag.k-blau .zeile-art { color: #2563eb; }
+.eintrag.k-violett { border-color: #7c3aed; }
+.eintrag.k-violett .zeile-art { color: #7c3aed; }
 .eintrag a { color: #1a5fb4; }
 
 /* Feld Schueler-ID */
@@ -225,6 +268,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .kat-kopf.k-rot { color: #dc2626; }
 .kat-kopf.k-gelb { color: #a16207; }
 .kat-kopf.k-blau { color: #2563eb; }
+.kat-kopf.k-violett { color: #7c3aed; }
 
 #letzteEintraege { margin-top: 8px; }
 #letzteEintraege .eintrag { border-width: 1.5px; }
@@ -265,12 +309,14 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   .druck-kat.k-rot { color: #dc2626; }
   .druck-kat.k-gelb { color: #a16207; }
   .druck-kat.k-blau { color: #2563eb; }
+  .druck-kat.k-violett { color: #7c3aed; }
   .druck-eintrag { border: 1px solid #c0c8d2; border-left: 1.5mm solid #999; border-radius: 2mm; padding: 3mm 4mm; margin-bottom: 4mm; page-break-inside: avoid; line-height: 1.45; }
   .druck-eintrag .d-art { font-weight: bold; }
   .druck-eintrag.k-gruen { border-left-color: #16a34a; } .druck-eintrag.k-gruen .d-art { color: #15803d; }
   .druck-eintrag.k-rot { border-left-color: #dc2626; } .druck-eintrag.k-rot .d-art { color: #dc2626; }
   .druck-eintrag.k-gelb { border-left-color: #eab308; } .druck-eintrag.k-gelb .d-art { color: #a16207; }
   .druck-eintrag.k-blau { border-left-color: #2563eb; } .druck-eintrag.k-blau .d-art { color: #2563eb; }
+  .druck-eintrag.k-violett { border-left-color: #7c3aed; } .druck-eintrag.k-violett .d-art { color: #7c3aed; }
   @page { size: A4; margin: 15mm; }
 }
 .versteckt { display: none !important; }
@@ -530,13 +576,27 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
       <div class="zeile" id="zeileSonder"></div>
       <!-- Infofeld + Dateianhang -->
       <div id="infoBlock">
-        <div class="feld">
+        <div class="feld" id="infofeldFeld">
           <label class="feldlabel" for="infofeld">Infofeld bzw. erg&auml;nzende Nachricht<span id="infofeldHinweis"> * mindestens 5 Zeichen</span></label>
           <textarea id="infofeld" rows="4"></textarea>
         </div>
+        <div id="dreiFelder" class="versteckt">
+          <div class="feld">
+            <label class="feldlabel" for="feldPlanung">Planung</label>
+            <textarea id="feldPlanung" rows="4"></textarea>
+          </div>
+          <div class="feld">
+            <label class="feldlabel" for="feldMassnahme">Maßnahme</label>
+            <textarea id="feldMassnahme" rows="4"></textarea>
+          </div>
+          <div class="feld">
+            <label class="feldlabel" for="feldBeobachtung">Beobachtung</label>
+            <textarea id="feldBeobachtung" rows="4"></textarea>
+          </div>
+        </div>
         <div id="anhangBox" class="feld">
           <label class="feldlabel" for="anhangInput">Dateianhang (optional)</label>
-          <input type="file" id="anhangInput" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+          <input type="file" id="anhangInput" multiple>
           <span id="anhangStatus" class="grau">Keine Datei ausgew&auml;hlt</span>
           <ul id="anhangListe"></ul>
         </div>
@@ -698,7 +758,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <script>
 "use strict";
 /* ================= Konfiguration ================= */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_3v6wOL3Fk1ZvXSOFwGKqGAw3TAm_dsd1RIwQ7HXNrESILALbLA5OBjYOuRy4ieGGFw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSANH91HNwnCeQllSMFhaoq5zH68FhjT8w53N79WiWVzPa9VNI842bEOf8NRjKX4NB/exec';
 const PASSWORT_SB = "1971";
 
 const SCHUELERLISTE = [
@@ -714,16 +774,17 @@ const ARTE = [
   { wert:"Inklusion", farbe:"gruen" },
   { wert:"Vorfallmelder", farbe:"rot" },
   { wert:"Elterngespräch", farbe:"gelb" },
+  { wert:"Lernentwicklungsplanung", farbe:"violett" },
   { wert:"Schülerbesonderheit", farbe:"blau" }
 ];
-const ARTE_SUCHE = ARTE.slice(0,3);
+const ARTE_SUCHE = ARTE.slice(0,3); // Suche weiterhin nur nach den ursprünglichen 3 Arten
 const SONDER = [
   { wert:"BUT", farbe:"gruen" }, { wert:"Förderbedarf", farbe:"orange" },
   { wert:"LRS", farbe:"violett" }, { wert:"Nachteilsausgleich", farbe:"petrol" },
   { wert:"Merkmal", farbe:"blau" }
 ];
 const FOERDER = ["LE","GE","ESE","SQ","KME","ASS"];
-const FARBE_KLASSE = { gruen:"k-gruen", rot:"k-rot", gelb:"k-gelb", blau:"k-blau" };
+const FARBE_KLASSE = { gruen:"k-gruen", rot:"k-rot", gelb:"k-gelb", blau:"k-blau", violett:"k-violett" };
 
 /* ================= Zustand ================= */
 let zustand = {
@@ -924,7 +985,9 @@ function baueArtDropdown(){
   ddArt = erstelleDropdown(zeile, {
     label: 'Art des Eintrags',
     placeholder: '--- bitte wählen ---',
-    optionen: ARTE.map(a=>({ wert:a.wert, farbe:a.farbe,
+    optionen: ARTE
+      .filter(a => a.wert !== 'Lernentwicklungsplanung' || zustand.kuerzel === 'GUB') // erscheint nur bei Kürzel GUB
+      .map(a=>({ wert:a.wert, farbe:a.farbe,
       gesperrt: a.wert==='Schülerbesonderheit' && !zustand.sbFreigeschaltet,
       freigeschaltet: a.wert==='Schülerbesonderheit' && zustand.sbFreigeschaltet })),
     onChange(arr){
@@ -940,8 +1003,14 @@ function baueArtDropdown(){
       ddArt.setzeRand(zustand.artFarbe);
       if (zustand.artFarbe === 'blau') ddArt.btn.classList.add('rot-text');
       entfernePasswortfeld();
-      if (wert === 'Schülerbesonderheit') baueSonderauswahl();
-      else { entferneSonderauswahl(); }
+      if (wert === 'Lernentwicklungsplanung'){
+        entferneSonderauswahl();
+        zeigeDreiFelder(true);   // drei Felder (Planung/Maßnahme/Beobachtung) statt Infofeld
+      } else {
+        zeigeDreiFelder(false);
+        if (wert === 'Schülerbesonderheit') baueSonderauswahl();
+        else { entferneSonderauswahl(); }
+      }
       baueDatumZeile();
       pruefeVollstaendig();
     }
@@ -979,6 +1048,30 @@ function bauePasswortfeld(){
 function entfernePasswortfeld(){
   const f = document.getElementById('passwortFeld');
   if (f) f.remove();
+}
+
+/* --- Lernentwicklungsplanung: drei Felder statt Infofeld --- */
+function zeigeDreiFelder(aktiv){
+  document.getElementById('dreiFelder').classList.toggle('versteckt', !aktiv);
+  document.getElementById('infofeldFeld').style.display = aktiv ? 'none' : '';
+  ['feldPlanung','feldMassnahme','feldBeobachtung'].forEach(id=>{
+    const ta = document.getElementById(id);
+    if (aktiv) pflichtStatus(ta);
+    else ta.classList.remove('feld-blink','feld-ok'); // Zustand vollständig zurücksetzen
+  });
+}
+/* rot blinkend (< 5 Zeichen) oder grün (>= 5 Zeichen) */
+function pflichtStatus(ta){
+  const ok = ta.value.trim().length >= 5;
+  ta.classList.toggle('feld-ok', ok);
+  ta.classList.toggle('feld-blink', !ok);
+}
+function dreiFelderWerte(){
+  return {
+    planung: document.getElementById('feldPlanung').value.trim(),
+    massnahme: document.getElementById('feldMassnahme').value.trim(),
+    beobachtung: document.getElementById('feldBeobachtung').value.trim()
+  };
 }
 
 /* --- Datum / Klasse / Schueler --- */
@@ -1105,17 +1198,29 @@ function infofeldOptional(){
 }
 function buttonsZeigen(){
   const btnZeile = document.getElementById('btnZeile');
-  if ((infofeldOptional() && istVollstaendig()) || infofeld.value.trim().length >= 5)
-    btnZeile.classList.add('sichtbar');
-  else
-    btnZeile.classList.remove('sichtbar');
+  let ok;
+  if (zustand.art === 'Lernentwicklungsplanung'){
+    // Buttons erscheinen, sobald mind. eines der drei Felder 5 Zeichen enthält
+    const w = dreiFelderWerte();
+    ok = istVollstaendig() && (w.planung.length >= 5 || w.massnahme.length >= 5 || w.beobachtung.length >= 5);
+  } else if (infofeldOptional() && istVollstaendig()){
+    ok = true;
+  } else {
+    ok = infofeld.value.trim().length >= 5;
+  }
+  if (ok) btnZeile.classList.add('sichtbar');
+  else btnZeile.classList.remove('sichtbar');
   aktualisiereInfofeldHinweis();
 }
 infofeld.addEventListener('input', buttonsZeigen);
+['feldPlanung','feldMassnahme','feldBeobachtung'].forEach(id=>{
+  const ta = document.getElementById(id);
+  ta.addEventListener('input', ()=>{ pflichtStatus(ta); buttonsZeigen(); });
+});
 
 /* --- Dateianhang --- */
 const anhangInput = document.getElementById('anhangInput');
-const MAX_DATEIGROESSE = 5 * 1024 * 1024; // 5 MB
+const MAX_DATEIGROESSE = 10 * 1024 * 1024; // 10 MB - alle gaengigen Formate erlaubt
 let anhangStatusTimer = null;
 function setzeAnhangStatus(){
   const st = document.getElementById('anhangStatus');
@@ -1134,17 +1239,11 @@ function setzeAnhangStatus(){
   }
 }
 anhangInput.addEventListener('change', ()=>{
-  const erlaubt = ['pdf','doc','docx','jpg','jpeg','png'];
   for (const datei of anhangInput.files){
-    const ext = datei.name.split('.').pop().toLowerCase();
-    if (!erlaubt.includes(ext)){
-      zeigeMeldung('Dateiformat nicht zulässig: ' + datei.name + ' (nur PDF, Word, JPEG, PNG)', {fehler:true, dauerhaft:true});
-      continue;
-    }
     if (datei.size >= MAX_DATEIGROESSE){
       zustand.anhangFehler = true; // roter Hinweis "Datei zu groß!" – Datei wird nicht übernommen
       setzeAnhangStatus();
-      zeigeMeldung('Datei zu groß (max. 5 MB): ' + datei.name, {fehler:true});
+      zeigeMeldung('Datei zu groß (max. 10 MB): ' + datei.name, {fehler:true});
       continue;
     }
     const reader = new FileReader();
@@ -1181,7 +1280,12 @@ document.getElementById('btnSpeichern').addEventListener('click', async ()=>{
   if (speichereLaeuft) return; // Doppelklick waehrend des Speicherns wird ignoriert
   const btnSpeichern = document.getElementById('btnSpeichern');
   if (!istVollstaendig()){ zeigeMeldung('Bitte alle Pflichtangaben vervollständigen.', {fehler:true, dauerhaft:true}); return; }
-  if (!infofeldOptional() && infofeld.value.trim().length < 5){ zeigeMeldung('Infofeld muss mindestens 5 Zeichen enthalten.', {fehler:true, dauerhaft:true}); return; }
+  if (!infofeldOptional() && zustand.art !== 'Lernentwicklungsplanung' && infofeld.value.trim().length < 5){ zeigeMeldung('Infofeld muss mindestens 5 Zeichen enthalten.', {fehler:true, dauerhaft:true}); return; }
+  const istLEP = zustand.art === 'Lernentwicklungsplanung';
+  const lepWerte = istLEP ? dreiFelderWerte() : { planung:'', massnahme:'', beobachtung:'' };
+  if (istLEP && lepWerte.planung.length < 5 && lepWerte.massnahme.length < 5 && lepWerte.beobachtung.length < 5){
+    zeigeMeldung('Bitte in mindestens einem der drei Felder (Planung, Maßnahme, Beobachtung) 5 Zeichen eingeben.', {fehler:true, dauerhaft:true}); return;
+  }
   const istMerkmal = zustand.sonderTyp === 'Merkmal';
   const daten = {
     lehrerkuerzel: zustand.kuerzel,
@@ -1193,7 +1297,10 @@ document.getElementById('btnSpeichern').addEventListener('click', async ()=>{
     sonderTyp: zustand.art === 'Schülerbesonderheit' ? zustand.sonderTyp : '',
     sonderWert: zustand.art === 'Schülerbesonderheit' ? (istMerkmal ? '' : zustand.sonderWert) : '',
     merkmalSchueler: istMerkmal ? zustand.schuelerAuswahl : [],
-    nachricht: infofeld.value,
+    nachricht: istLEP ? lepWerte.planung : infofeld.value, // bei LEP steht 'Planung' in 'Ergänzende Nachricht'
+    planung: lepWerte.planung,
+    massnahme: lepWerte.massnahme,
+    beobachtung: lepWerte.beobachtung,
     anhaenge: zustand.anhaenge,
     eintragId: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) // gegen Doppeleintraege
   };
@@ -1293,6 +1400,12 @@ function formularZuruecksetzen(){
     sbFreigeschaltet:zustand.sbFreigeschaltet, sonderTyp:"", sonderWert:"",
     schuelerAuswahl:[], datum:"", klasse:"", anhaenge:[], schuelerBlinkAus:false };
   infofeld.value = '';
+  ['feldPlanung','feldMassnahme','feldBeobachtung'].forEach(id=>{
+    const ta = document.getElementById(id);
+    ta.value = '';
+    ta.classList.remove('feld-blink','feld-ok');
+  });
+  zeigeDreiFelder(false);
   document.getElementById('infoBlock').classList.remove('sichtbar');
   document.getElementById('btnZeile').classList.remove('sichtbar');
   document.getElementById('anhangListe').innerHTML = '';
@@ -1311,7 +1424,12 @@ function zeigeLetzteEintraege(){
     karte.innerHTML = '<div class="zeile-art">' + e.art + '</div>' +
       '<div>' + isoZuDeutsch(e.datum) + '</div>' +
       '<div>' + e.lehrerkuerzel + ' (' + e.schulfach + ') (' + e.klasse + ') – ' + e.schueler.join('; ') + '</div>' +
-      '<div>' + e.nachricht.replace(/</g,'&lt;') + '</div>';
+      '<div>' + e.nachricht.replace(/</g,'&lt;') + '</div>' +
+      (e.art === 'Lernentwicklungsplanung'
+        ? '<div><strong>Planung:</strong> ' + (e.planung||'').replace(/</g,'&lt;') + '</div>' +
+          '<div><strong>Maßnahme:</strong> ' + (e.massnahme||'').replace(/</g,'&lt;') + '</div>' +
+          '<div><strong>Beobachtung:</strong> ' + (e.beobachtung||'').replace(/</g,'&lt;') + '</div>'
+        : '');
   });
 }
 
@@ -1415,6 +1533,147 @@ document.getElementById('btnSuchen').addEventListener('click', async ()=>{
   }
 });
 
+/* --- LEP: klickbare Felder (ein-/ausklappbar) + gemeinsame Leiste --- */
+function lepFeldBlock(t){
+  const wrap = el('div', {class:'lep-block'}, null);
+  wrap._editors = {};
+
+  // Gemeinsame Leiste (unten mittig, nur EINMAL): Hinweis/Speichern + Kürzel + Verwerfen + Upload
+  const controls = el('div', {class:'lep-controls versteckt'}, wrap);
+  const hinweis = el('span', {class:'lep-hinweis', role:'button', tabindex:'0'}, controls);
+  const btnVerwerfen = el('button', {type:'button', class:'lep-verwerfen versteckt'}, controls);
+  btnVerwerfen.textContent = 'Verwerfen';
+  const kzInp = el('input', {type:'text', class:'lep-kuerzel', maxlength:'4', placeholder:'Kürzel', autocomplete:'off'}, controls);
+
+  const TEXT_WARTEN = 'Ergänzungen werden nach Eingabe deines Lehrerkürzels gespeichert';
+  const TEXT_BEREIT = 'Klick um Ergänzungen zu speichern';
+  hinweis.textContent = TEXT_WARTEN;
+
+  const neuText = (ta, alt)=> (ta.value.startsWith(alt) ? ta.value.slice(alt.length) : ta.value);
+  const update = ()=>{
+    const anyGenug = Object.keys(wrap._editors).some(f =>
+      neuText(wrap._editors[f].ta, wrap._editors[f].alt).trim().length >= 5);
+    controls.classList.toggle('versteckt', !anyGenug);
+    const okKz = /^[A-Z]{2,4}$/.test(kzInp.value.trim());
+    hinweis.textContent = okKz ? TEXT_BEREIT : TEXT_WARTEN;
+    hinweis.classList.toggle('bereit', okKz); // grün mit dezent rot blinkender Umrandung
+    btnVerwerfen.classList.toggle('versteckt', !okKz);
+  };
+
+  kzInp.addEventListener('input', ()=>{
+    kzInp.value = kzInp.value.toUpperCase().replace(/[^A-Z]/g,'');
+    update();
+  });
+  kzInp.addEventListener('keydown', e=>{ if (e.key === 'Enter') hinweis.click(); });
+
+  btnVerwerfen.addEventListener('click', ()=>{
+    Object.keys(wrap._editors).forEach(f=>{
+      wrap._editors[f].editor.remove();
+      delete wrap._editors[f];
+    });
+    controls.classList.add('versteckt');
+    zeigeMeldung('Ergänzungen verworfen');
+  });
+
+  hinweis.addEventListener('click', async ()=>{
+    const kz = kzInp.value.trim();
+    if (!/^[A-Z]{2,4}$/.test(kz)){
+      zeigeMeldung('Bitte zuerst Ihr Lehrerkürzel eingeben (2–4 Großbuchstaben).', {fehler:true});
+      return;
+    }
+    const heute = new Date();
+    const datumStr = String(heute.getDate()).padStart(2,'0') + '.' + String(heute.getMonth()+1).padStart(2,'0') + '.' + heute.getFullYear();
+    const tag = ' (' + kz + '_' + datumStr + ')'; // z. B. (HAR_06.11.2026)
+    const jobs = [];
+    Object.keys(wrap._editors).forEach(feld=>{
+      const ed = wrap._editors[feld];
+      const zeilen = neuText(ed.ta, ed.alt).split('\n')
+        .map(z => z.replace(/^\s*-\s*/, '').trim())
+        .filter(z => z.length > 0)
+        .map(z => '  - ' + z + tag);
+      if (!zeilen.length) return;
+      jobs.push({ feld: feld, ed: ed, neuerInhalt: (ed.alt ? ed.alt + "\n" : "") + zeilen.join("\n") });
+    });
+    if (!jobs.length) return;
+    hinweis.style.pointerEvents = 'none';
+    try {
+      for (const job of jobs){
+        const url = SCRIPT_URL + '?aktion=zelleAktualisieren&zeile=' + encodeURIComponent(t.zeile) +
+                    '&feld=' + encodeURIComponent(job.feld) + '&wert=' + encodeURIComponent(job.neuerInhalt);
+        const ctrl = new AbortController();
+        const timer = setTimeout(()=>ctrl.abort(), 30000);
+        let res;
+        try { res = await fetch(url, {signal: ctrl.signal}); } finally { clearTimeout(timer); }
+        let json;
+        try { json = JSON.parse(await res.text()); }
+        catch(e){ throw new Error('Das Script hat keine gültige Antwort gesendet. Bitte Code.gs prüfen (Aktion „zelleAktualisieren").'); }
+        if (json.fehler) throw new Error(json.fehler);
+        t[job.feld] = job.neuerInhalt; // auch für den Druckbericht aktualisieren
+        job.ed.feldDiv.querySelector('.lep-inhalt').textContent = job.neuerInhalt;
+        job.ed.editor.remove();
+        delete wrap._editors[job.feld];
+      }
+      if (!Object.keys(wrap._editors).length) controls.classList.add('versteckt');
+      zeigeMeldung(jobs.length > 1 ? 'Ergänzungen wurden gespeichert' : 'Ergänzung wurde gespeichert');
+    } catch(err){
+      zeigeMeldung('Fehler beim Speichern: ' + err.message, {fehler:true, dauerhaft:true});
+    } finally {
+      hinweis.style.pointerEvents = '';
+    }
+  });
+
+  wrap._schliessen = {};
+  [['Planung','planung'],['Maßnahme','massnahme'],['Beobachtung','beobachtung']].forEach(pair=>{
+    const feldDiv = el('div', {class:'lep-feld', 'data-feld':pair[1]}, wrap);
+    const lab = el('span', {class:'lep-label'}, feldDiv); lab.textContent = pair[0] + ': ';
+    const toggle = el('span', {class:'lep-toggle', title:'Feld aufklappen/zuklappen'}, feldDiv);
+    toggle.textContent = '\u25BC'; // dunkelrotes Dreieck nach unten = aufklappen
+    const inhalt = el('span', {class:'lep-inhalt'}, feldDiv);
+    inhalt.textContent = (t[pair[1]] || '').trim() || '\u2013'; // kursiv & ausgegraut
+    const schliessen = ()=>{
+      if (!wrap._editors[pair[1]]) return;
+      wrap._editors[pair[1]].editor.remove();
+      delete wrap._editors[pair[1]];
+      toggle.textContent = '\u25BC'; // wieder Dreieck nach unten
+      update(); // Speicherleiste ausblenden, falls kein Feld mehr offen
+    };
+    wrap._schliessen[pair[1]] = schliessen;
+    feldDiv.addEventListener('click', ()=>{
+      // ▼ klappt das leere Feld nach unten auf, ▲ (Dachsymbol) schließt es samt Speicherleiste
+      if (wrap._editors[pair[1]]) schliessen();
+      else { oeffneLepEditor(wrap, feldDiv, pair[1], t, update); toggle.textContent = '\u25B2'; }
+    });
+  });
+  return wrap;
+}
+
+function aktualisiereAnhangAnzeige(karte, t){
+  const links = String(t.anhaenge || '').split('\n').filter(x=>x.trim());
+  if (!links.length) return;
+  let div = karte.querySelector('.eintrag-anhang');
+  if (!div) div = el('div', {class:'eintrag-anhang'}, karte);
+  div.innerHTML = links.map((u,i)=>'<a href="'+u+'" target="_blank" rel="noopener">Dateianhang'+(links.length>1?' '+(i+1):'')+'</a>').join('<br>');
+}
+
+function oeffneLepEditor(wrap, feldDiv, feld, t, update){
+  if (wrap._editors[feld]) return;
+  if (!t.zeile){
+    zeigeMeldung('Ergänzungen benötigen eine aktualisierte Code.gs: Bitte „zeile" in den Suchergebnissen mitgeben.', {fehler:true, dauerhaft:true});
+    return;
+  }
+  const alt = (t[feld] || '').trim();
+  const editor = el('div', {class:'lep-editor'}, feldDiv);
+  const ta = el('textarea', {class:'lep-ta', rows:'5'}, editor);
+  ta.value = ''; // leer starten; gespeicherter Inhalt bleibt oben sichtbar und wird beim Speichern angehängt
+  wrap._editors[feld] = { feldDiv: feldDiv, editor: editor, ta: ta, alt: alt };
+  ta.addEventListener('input', update);
+  ta.addEventListener('keydown', e=>{
+    if (e.key === 'Escape' && wrap._schliessen && wrap._schliessen[feld]) wrap._schliessen[feld]();
+  });
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+
 function zeigeErgebnisse(json, modus){
   const box = document.getElementById('ergebnisListe');
   box.innerHTML = '';
@@ -1442,8 +1701,9 @@ function zeigeErgebnisse(json, modus){
         '<div>' + d + '</div>' +
         '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
           (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>' +
-        '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' +
-        (t.anhaenge ? '<div><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
+        (t.art !== 'Lernentwicklungsplanung' ? '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' : '') +
+        (t.anhaenge ? '<div class="eintrag-anhang"><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
+      if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t));
     };
     if (modus === 'schueler'){
       // Nach Kategorien geordnet, jeweils mit Anzahl in Klammern: Vorfallmelder, Inklusion, Elterngespraech
@@ -1454,7 +1714,7 @@ function zeigeErgebnisse(json, modus){
         const farbe = (ARTE.find(a=>a.wert===kat)||{}).farbe || '';
         const h = el('div', {class:'kat-kopf ' + (FARBE_KLASSE[farbe] || '')}, box);
         const n = gruppen[kat].length;
-        h.textContent = kat + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+        h.textContent = kat === 'Lernentwicklungsplanung' ? kat : kat + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
         gruppen[kat].forEach(karteEintrag);
       });
     } else {
@@ -1492,7 +1752,7 @@ function zeigeErgebnisse(json, modus){
 }
 
 /* ================= Bericht drucken (PDF) ================= */
-const KATEGORIE_REIHENFOLGE = ['Vorfallmelder', 'Inklusion', 'Elterngespräch'];
+const KATEGORIE_REIHENFOLGE = ['Lernentwicklungsplanung', 'Vorfallmelder', 'Inklusion', 'Elterngespräch'];
 
 /* Stile des Berichts fuer den eigenstaendigen Tab (iOS) */
 const REPORT_CSS = `
@@ -1512,12 +1772,14 @@ const REPORT_CSS = `
   .druck-kat { font-size: 13pt; font-weight: bold; margin: 5mm 0 3mm 0; padding-bottom: 1mm; border-bottom: 0.5mm solid #c8d4e0; page-break-after: avoid; }
   .druck-kat.k-gruen { color: #15803d; } .druck-kat.k-rot { color: #dc2626; }
   .druck-kat.k-gelb { color: #a16207; } .druck-kat.k-blau { color: #2563eb; }
+  .druck-kat.k-violett { color: #7c3aed; }
   .druck-eintrag { border: 1px solid #c0c8d2; border-left: 1.5mm solid #999; border-radius: 2mm; padding: 3mm 4mm; margin-bottom: 4mm; page-break-inside: avoid; line-height: 1.45; }
   .druck-eintrag .d-art { font-weight: bold; }
   .druck-eintrag.k-gruen { border-left-color: #16a34a; } .druck-eintrag.k-gruen .d-art { color: #15803d; }
   .druck-eintrag.k-rot { border-left-color: #dc2626; } .druck-eintrag.k-rot .d-art { color: #dc2626; }
   .druck-eintrag.k-gelb { border-left-color: #eab308; } .druck-eintrag.k-gelb .d-art { color: #a16207; }
   .druck-eintrag.k-blau { border-left-color: #2563eb; } .druck-eintrag.k-blau .d-art { color: #2563eb; }
+  .druck-eintrag.k-violett { border-left-color: #7c3aed; } .druck-eintrag.k-violett .d-art { color: #7c3aed; }
   #iosHinweis { background: #eff6ff; color: #1e3a5f; border: 1px solid #93c5fd; border-radius: 3mm; padding: 3mm 4mm; font-size: 9.5pt; margin-bottom: 5mm; }
   @page { size: A4; margin: 15mm; }
 `;
@@ -1574,7 +1836,12 @@ document.getElementById('btnBericht').addEventListener('click', ()=>{
       '<div>' + d + '</div>' +
       '<div>' + (t.lehrerkuerzel || '') + ' (' + (t.schulfach || '') + ') (' + (t.klasse || '') + ')' +
         (modus === 'art' && t.schueler ? ' &ndash; ' + t.schueler.replace(/</g,'&lt;') : '') + '</div>' +
-      '<div>' + (t.nachricht || '').replace(/</g,'&lt;') + '</div>';
+      (t.art !== 'Lernentwicklungsplanung' ? '<div>' + (t.nachricht || '').replace(/</g,'&lt;') + '</div>' : '') +
+      (t.art === 'Lernentwicklungsplanung'
+        ? '<div><strong>Planung:</strong> ' + (t.planung || '').replace(/</g,'&lt;') + '</div>' +
+          '<div><strong>Ma&szlig;nahme:</strong> ' + (t.massnahme || '').replace(/</g,'&lt;') + '</div>' +
+          '<div><strong>Beobachtung:</strong> ' + (t.beobachtung || '').replace(/</g,'&lt;') + '</div>'
+        : '');
   };
 
   if (modus === 'schueler'){
@@ -1590,7 +1857,7 @@ document.getElementById('btnBericht').addEventListener('click', ()=>{
         const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
         const h = el('h2', {class:'druck-kat ' + (FARBE_KLASSE[farbe] || '')}, druck);
         const n = anzahl[t.art];
-        h.textContent = t.art + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+        h.textContent = t.art === 'Lernentwicklungsplanung' ? t.art : t.art + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
       }
       eintragKarte(t);
     });
