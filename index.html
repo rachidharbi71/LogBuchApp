@@ -137,6 +137,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .dd-opt[data-farbe="violett"] { border-left-color: #7c3aed; background-color: #f5f3ff; }
 .dd-opt[data-farbe="petrol"] { border-left-color: #0f766e; background-color: #f0fdfa; }
 .dd-opt.gesperrt { color: #9aa4b0; background: #f2f4f7; font-style: italic; }
+.dd-opt.inaktiv { color: #9aa4b0; background: #f2f4f7; font-style: italic; cursor: not-allowed; }
 .dd-opt.freigeschaltet { color: #dc2626; font-weight: bold; }
 .dd-ck { width: 17px; height: 17px; flex: none; }
 
@@ -550,7 +551,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   </text>
 </svg></div>
   <div id="topContent">
-    <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r Vorfallmelder u. Dokumentation</h1>
+    <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r Vorfallmelder, Dokumentation und Lernentwicklungsplanung</h1>
 
     <!-- ===== Anliegen (erstes sichtbares Element) ===== -->
     <div class="zeile" id="anliegenZeile">
@@ -859,6 +860,7 @@ function erstelleDropdown(parent, opts){
     if (opt.farbe) o.dataset.farbe = opt.farbe;
     if (opt.gesperrt) o.classList.add('gesperrt');
     if (opt.freigeschaltet) o.classList.add('freigeschaltet');
+    if (opt.inaktivIf ? opt.inaktivIf() : opt.inaktiv) o.classList.add('inaktiv');
     if (opts.multi) {
       const ck = el('input', {type:'checkbox', class:'dd-ck'}, o);
       ck.addEventListener('click', e=>e.stopPropagation());
@@ -873,6 +875,7 @@ function erstelleDropdown(parent, opts){
     } else {
       o.textContent = opt.wert;
       o.addEventListener('click', ()=>{
+        if (opt.inaktivIf ? opt.inaktivIf() : opt.inaktiv) return; // ohne GUB: Eintrag ohne Funktion
         auswahl.length = 0; auswahl.push(opt.wert);
         liste.querySelectorAll('.dd-opt').forEach(x=>x.classList.remove('ausgewaehlt'));
         o.classList.add('ausgewaehlt');
@@ -885,7 +888,11 @@ function erstelleDropdown(parent, opts){
 
   btn.addEventListener('click', e=>{
     e.stopPropagation();
-    if (!opts.multi && opts.optionen.some(o=>o.gesperrt && !opts.onGesperrtKlick)) {}
+    // Inaktiv-Status aller Optionen frisch pruefen (z. B. Lernentwicklungsplanung erst ab Kürzel GUB)
+    opts.optionen.forEach(o=>{
+      const elO = liste.querySelector('[data-wert="'+o.wert+'"]');
+      if (elO) elO.classList.toggle('inaktiv', o.inaktivIf ? o.inaktivIf() : !!o.inaktiv);
+    });
     document.querySelectorAll('.dd.auf').forEach(x=>{ if(x!==dd) x.classList.remove('auf'); });
     dd.classList.toggle('auf');
   });
@@ -985,11 +992,10 @@ function baueArtDropdown(){
   ddArt = erstelleDropdown(zeile, {
     label: 'Art des Eintrags',
     placeholder: '--- bitte wählen ---',
-    optionen: ARTE
-      .filter(a => a.wert !== 'Lernentwicklungsplanung' || zustand.kuerzel === 'GUB') // erscheint nur bei Kürzel GUB
-      .map(a=>({ wert:a.wert, farbe:a.farbe,
+    optionen: ARTE.map(a=>({ wert:a.wert, farbe:a.farbe,
       gesperrt: a.wert==='Schülerbesonderheit' && !zustand.sbFreigeschaltet,
-      freigeschaltet: a.wert==='Schülerbesonderheit' && zustand.sbFreigeschaltet })),
+      freigeschaltet: a.wert==='Schülerbesonderheit' && zustand.sbFreigeschaltet,
+      inaktivIf: a.wert==='Lernentwicklungsplanung' ? () => zustand.kuerzel !== 'GUB' : null })),
     onChange(arr){
       const wert = arr[0];
       if (wert === 'Schülerbesonderheit' && !zustand.sbFreigeschaltet){
