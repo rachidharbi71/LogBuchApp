@@ -23,7 +23,7 @@ h2 { font-size: 18px; }
 /* Fixiertes Logo rechts oben (ca. 28 mm x 28 mm) */
 #logoFixed {
   position: fixed; top: 10px; right: 12px; z-index: 100;
-  width: 28mm; height: 28mm; pointer-events: none;
+  width: 32mm; height: 32mm; pointer-events: none; /* +15 % gegenüber 28 mm */
 }
 #logoFixed svg { width: 100%; height: 100%; }
 
@@ -197,7 +197,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .lep-feld:hover { background: #f4f7fb; }
 .lep-label { font-weight: bold; color: #333; }
+.lep-kopfzeile { font-weight: normal; color: #333a45; font-size: 1.15em; text-decoration: underline; } /* nicht fett, 15 % größer, unterstrichen */
 .lep-inhalt { font-style: italic; color: #8a94a0; white-space: pre-wrap; }
+.lep-zeile { display: inline-block; width: 100%; padding-left: 1.7em; text-indent: -1.7em; } /* hängender Einzug für "-"-Zeilen */
 .lep-editor { margin-top: 4px; }
 .lep-ta { width: 100%; min-height: 6em; font-size: 15px; font-family: inherit; padding: 6px 8px;
   border: 1.5px solid #7a8aa0; border-radius: 5px; background: #fff; color: #222; }
@@ -220,7 +222,13 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   50% { border-color: #e0332e; box-shadow: 0 0 6px rgba(224,51,46,0.35); }
 }
 .lep-verwerfen { background: #d32f2f; color: #fff; padding: 5px 14px; font-size: 13px; border-radius: 6px; }
+@keyframes lepKuerzelBlink {
+  0%, 100% { border-color: rgba(224,51,46,0.30); box-shadow: none; }
+  50% { border-color: #e0332e; box-shadow: 0 0 5px rgba(224,51,46,0.30); }
+}
 .lep-kuerzel { width: 10ch; padding: 5px 8px; border: 1.5px solid #7a8aa0; border-radius: 5px; font-size: 14px; }
+.lep-kuerzel:placeholder-shown { border-color: #e0332e; animation: lepKuerzelBlink 1.4s ease-in-out infinite; } /* leer: rot blinkend */
+.lep-kuerzel:not(:placeholder-shown) { border-color: #7c3aed; animation: none; } /* gefüllt: lila, ohne Blinken */
 
 /* ============ Suchbereich ============ */
 #suchKriteriumZeile { display: none; }
@@ -269,7 +277,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .kat-kopf.k-rot { color: #dc2626; }
 .kat-kopf.k-gelb { color: #a16207; }
 .kat-kopf.k-blau { color: #2563eb; }
-.kat-kopf.k-violett { color: #7c3aed; }
+.kat-kopf.k-violett { color: #7c3aed; font-size: 18px; } /* +20 % gegenüber 15 px */
 
 #letzteEintraege { margin-top: 8px; }
 #letzteEintraege .eintrag { border-width: 1.5px; }
@@ -551,7 +559,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   </text>
 </svg></div>
   <div id="topContent">
-    <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r Vorfallmelder, Dokumentation und Lernentwicklungsplanung</h1>
+    <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r <span style="color:#dc2626; font-weight:bold;">V</span>orfallmelder, <span style="color:#eab308; font-weight:bold;">D</span>okumentation und <span style="color:#7c3aed; font-weight:bold;">L</span>ernentwicklungsplanung</h1>
 
     <!-- ===== Anliegen (erstes sichtbares Element) ===== -->
     <div class="zeile" id="anliegenZeile">
@@ -778,7 +786,7 @@ const ARTE = [
   { wert:"Lernentwicklungsplanung", farbe:"violett" },
   { wert:"Schülerbesonderheit", farbe:"blau" }
 ];
-const ARTE_SUCHE = ARTE.slice(0,3); // Suche weiterhin nur nach den ursprünglichen 3 Arten
+const ARTE_SUCHE = ARTE.filter(a => a.wert !== 'Schülerbesonderheit'); // inkl. Lernentwicklungsplanung, weiterhin ohne Schülerbesonderheit
 const SONDER = [
   { wert:"BUT", farbe:"gruen" }, { wert:"Förderbedarf", farbe:"orange" },
   { wert:"LRS", farbe:"violett" }, { wert:"Nachteilsausgleich", farbe:"petrol" },
@@ -1540,6 +1548,21 @@ document.getElementById('btnSuchen').addEventListener('click', async ()=>{
 });
 
 /* --- LEP: klickbare Felder (ein-/ausklappbar) + gemeinsame Leiste --- */
+/* LEP-Inhalt zeilenweise aufbauen; Zeilen, die mit "-" beginnen, erhalten einen hängenden Einzug */
+function lepInhaltSetzen(inhalt, text){
+  inhalt.innerHTML = '';
+  const zeilen = String(text || '').trim().split('\n');
+  if (!zeilen[0]){ inhalt.textContent = '\u2013'; return; }
+  zeilen.forEach(z=>{
+    if (z.trim().startsWith('-')){
+      const zDiv = el('div', {class:'lep-zeile'}, inhalt);
+      zDiv.textContent = z;
+    } else {
+      inhalt.appendChild(document.createTextNode(z + '\n'));
+    }
+  });
+}
+
 function lepFeldBlock(t){
   const wrap = el('div', {class:'lep-block'}, null);
   wrap._editors = {};
@@ -1615,7 +1638,7 @@ function lepFeldBlock(t){
         catch(e){ throw new Error('Das Script hat keine gültige Antwort gesendet. Bitte Code.gs prüfen (Aktion „zelleAktualisieren").'); }
         if (json.fehler) throw new Error(json.fehler);
         t[job.feld] = job.neuerInhalt; // auch für den Druckbericht aktualisieren
-        job.ed.feldDiv.querySelector('.lep-inhalt').textContent = job.neuerInhalt;
+        lepInhaltSetzen(job.ed.feldDiv.querySelector('.lep-inhalt'), job.neuerInhalt);
         job.ed.editor.remove();
         delete wrap._editors[job.feld];
       }
@@ -1635,7 +1658,7 @@ function lepFeldBlock(t){
     const toggle = el('span', {class:'lep-toggle', title:'Feld aufklappen/zuklappen'}, feldDiv);
     toggle.textContent = '\u25BC'; // dunkelrotes Dreieck nach unten = aufklappen
     const inhalt = el('span', {class:'lep-inhalt'}, feldDiv);
-    inhalt.textContent = (t[pair[1]] || '').trim() || '\u2013'; // kursiv & ausgegraut
+    lepInhaltSetzen(inhalt, t[pair[1]]); // kursiv & ausgegraut, "-"-Zeilen mit hängendem Einzug
     const schliessen = ()=>{
       if (!wrap._editors[pair[1]]) return;
       wrap._editors[pair[1]].editor.remove();
@@ -1703,10 +1726,14 @@ function zeigeErgebnisse(json, modus){
       const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, box);
       const d = isoZuDeutsch(t.datum);
       karte.innerHTML =
-        '<div class="zeile-art">' + (t.art||'') + '</div>' +
-        '<div>' + d + '</div>' +
-        '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
-          (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>' +
+        (t.art === 'Lernentwicklungsplanung'
+          ? '<div class="lep-kopfzeile">Lernentwicklungsplanung erstellt am ' + d + ' durch ' +
+            (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
+            (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>'
+          : '<div class="zeile-art">' + (t.art||'') + '</div>' +
+            '<div>' + d + '</div>' +
+            '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
+              (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>') +
         (t.art !== 'Lernentwicklungsplanung' ? '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' : '') +
         (t.anhaenge ? '<div class="eintrag-anhang"><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
       if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t));
@@ -1724,6 +1751,12 @@ function zeigeErgebnisse(json, modus){
         gruppen[kat].forEach(karteEintrag);
       });
     } else {
+      // Bei Art-Suche nach Lernentwicklungsplanung: Überschrift mit Anzahl direkt unter dem PDF-Button
+      if (modus === 'art' && ddSuchWert && ddSuchWert.wert()[0] === 'Lernentwicklungsplanung' && treffer.length){
+        const h = el('div', {class:'kat-kopf k-violett'}, box);
+        const n = treffer.length;
+        h.textContent = 'Lernentwicklungsplanungen (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+      }
       treffer.forEach(karteEintrag);
     }
   }
