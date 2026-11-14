@@ -27,17 +27,17 @@ h2 { font-size: 18px; }
 }
 #logoFixed svg { width: 100%; height: 100%; }
 
-/* ============ Bereichsaufteilung 60 % / 40 % ============ */
+/* ============ Bereichsaufteilung 45 % / 55 % ============ */
 #topArea {
   position: relative;
-  height: 60vh; min-height: 360px;
+  height: 45vh; min-height: 340px;
   overflow-y: auto;
   padding: 12px 16px 16px 16px;
   border-bottom: 2px solid #c8d4e0;
   background: #f4f7fb;
 }
 #bottomArea {
-  height: 40vh; min-height: 220px;
+  height: 55vh; min-height: 260px;
   overflow-y: auto;
   padding: 12px 16px;
   background: #eef3f8;
@@ -50,6 +50,8 @@ h2 { font-size: 18px; }
   pointer-events: none; z-index: 0;
 }
 #topContent { position: relative; z-index: 1; }
+/* Fusszeile rechts buendig unter der Ueberschrift (Ende = Ende der Ueberschrift, unter dem „(g)“) */
+#fusszeile { font-size: 8pt; font-style: italic; color: #9aa4b0; text-align: right; margin: -2px 0 4px 0; white-space: nowrap; }
 
 /* ============ Schriftgroessen (Abschnitt 1.1, Stand 17.10.2026) ============ */
 input, select, textarea, button, .dd-btn { font-size: 16px; font-family: inherit; }
@@ -271,6 +273,39 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   #ergebnisWrap { flex-direction: column; }
   #schuelerIdFeld { width: 100%; min-width: 0; }
 }
+
+/* Kategorien in einer Zeile: rote iOS-Badge ueber dem Namen, Pfeil blinkt dezent */
+.kat-zeile { display: flex; flex-direction: column; align-items: stretch; gap: 14px; margin: 10px 0 8px 0; } /* Kategorien untereinander, eine Zeile Abstand */
+.kat-gruppe { display: flex; flex-direction: column; min-width: 0; }
+.kat-kopf2 { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
+.kat-sym-wrap { position: relative; display: inline-flex; margin-left: 2px; }
+.kat-sym { font-size: 20px; line-height: 1.2; } /* Symbol passend vergrößert */
+.kat-badge {
+  position: absolute; top: -11px; right: calc(-16px - 1ch); /* 1 Zeichen nach links gerueckt, keine Ueberlappung mit dem Symbol */
+  background: #dc2626; color: #fff; border-radius: 999px;
+  min-width: 27px; height: 27px; padding: 0 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; /* +20 % gegenüber 22 px */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+@keyframes badgeBlinkSanft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.kat-badge.blinkt-sanft { animation: badgeBlinkSanft 1.4s ease-in-out infinite; } /* blinkt nur, solange zugeklappt */
+.kat-namezeile { display: flex; align-items: center; gap: 8px; border-bottom: 1.5px solid #c8d4e0; padding-bottom: 3px; }
+.kat-name { font-size: 17px; font-weight: bold; } /* +15 % gegenüber 15 px */
+.kat-gruppe.k-gruen .kat-name { color: #15803d; }
+.kat-gruppe.k-rot .kat-name { color: #dc2626; }
+.kat-gruppe.k-gelb .kat-name { color: #a16207; }
+.kat-gruppe.k-violett .kat-name { color: #7c3aed; }
+.kat-pfeil {
+  margin-left: auto; color: #7cc7f7; font-size: 13px; font-style: normal;
+  border: 1.5px solid rgba(224,51,46,0.25); border-radius: 5px; padding: 0 6px;
+  animation: lepToggleBlink 1.6s ease-in-out infinite; /* dezent rot umrahmtes Blinken */
+}
+.kat-body.zugeklappt { display: none; }
 
 .kat-kopf { font-size: 15px; font-weight: bold; margin: 12px 0 8px 0; padding-bottom: 3px; border-bottom: 1.5px solid #c8d4e0; }
 .kat-kopf.k-gruen { color: #15803d; }
@@ -560,6 +595,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 </svg></div>
   <div id="topContent">
     <h1><span style="color:#16a34a; font-weight:bold;">L</span>og<span style="color:#ea8a1c; font-weight:bold;">B</span>uch f&uuml;r <span style="color:#dc2626; font-weight:bold;">V</span>orfallmelder, <span style="color:#eab308; font-weight:bold;">D</span>okumentation und <span style="color:#7c3aed; font-weight:bold;">L</span>ernentwicklungsplanung</h1>
+    <div id="fusszeile" aria-hidden="true"></div>
 
     <!-- ===== Anliegen (erstes sichtbares Element) ===== -->
     <div class="zeile" id="anliegenZeile">
@@ -587,20 +623,20 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
       <div id="infoBlock">
         <div class="feld" id="infofeldFeld">
           <label class="feldlabel" for="infofeld">Infofeld bzw. erg&auml;nzende Nachricht<span id="infofeldHinweis"> * mindestens 5 Zeichen</span></label>
-          <textarea id="infofeld" rows="4"></textarea>
+          <textarea id="infofeld" rows="4" spellcheck="true"></textarea>
         </div>
         <div id="dreiFelder" class="versteckt">
           <div class="feld">
             <label class="feldlabel" for="feldPlanung">Planung</label>
-            <textarea id="feldPlanung" rows="4"></textarea>
+            <textarea id="feldPlanung" rows="4" spellcheck="true"></textarea>
           </div>
           <div class="feld">
             <label class="feldlabel" for="feldMassnahme">Maßnahme</label>
-            <textarea id="feldMassnahme" rows="4"></textarea>
+            <textarea id="feldMassnahme" rows="4" spellcheck="true"></textarea>
           </div>
           <div class="feld">
             <label class="feldlabel" for="feldBeobachtung">Beobachtung</label>
-            <textarea id="feldBeobachtung" rows="4"></textarea>
+            <textarea id="feldBeobachtung" rows="4" spellcheck="true"></textarea>
           </div>
         </div>
         <div id="anhangBox" class="feld">
@@ -961,7 +997,7 @@ function baueLehrerZeile(){
   // Lehrerkuerzel
   const f1 = el('div', {class:'feld'}, gruppe);
   el('label', {class:'feldlabel', for:'kuerzelInp'}, f1).textContent = 'Lehrerkürzel';
-  const inp = el('input', {type:'text', id:'kuerzelInp', class:'blinkt', maxlength:'4', autocomplete:'off'}, f1);
+  const inp = el('input', {type:'text', id:'kuerzelInp', class:'blinkt', maxlength:'4', autocomplete:'off', spellcheck:'false'}, f1);
   inp.addEventListener('input', ()=>{ inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,''); });
   inp.addEventListener('keydown', e=>{
     if (e.key === 'Enter'){
@@ -979,7 +1015,7 @@ function baueSchulfach(gruppe){
   if (document.getElementById('fachInp')) return;
   const f2 = el('div', {class:'feld'}, gruppe);
   el('label', {class:'feldlabel', for:'fachInp'}, f2).textContent = 'Schulfach/Funktion';
-  const inp = el('input', {type:'text', id:'fachInp', class:'blinkt', autocomplete:'off'}, f2);
+  const inp = el('input', {type:'text', id:'fachInp', class:'blinkt', autocomplete:'off', spellcheck:'false'}, f2);
   inp.addEventListener('keydown', e=>{
     if (e.key === 'Enter'){
       const v = inp.value.trim();
@@ -1290,6 +1326,25 @@ function aktualisiereInfofeldHinweis(){
 
 /* --- Speichern --- */
 let speichereLaeuft = false;
+/* Duplikat-Check: zaehlt Eintraege mit gleicher Art + Datum + Schueler (Server-Aktion pruefeDuplikat).
+   Liefert das Script die Antwort nicht (alte Code.gs), wird 0 zurueckgegeben und normal gespeichert. */
+async function eintragKopieVorhanden(daten){
+  try {
+    const namen = (daten.schueler && daten.schueler.length) ? daten.schueler
+                : (daten.merkmalSchueler && daten.merkmalSchueler.length) ? daten.merkmalSchueler : [];
+    if (!namen.length) return 0;
+    const url = SCRIPT_URL + '?aktion=pruefeDuplikat&art=' + encodeURIComponent(daten.art) +
+                '&datum=' + encodeURIComponent(daten.datum) +
+                '&schueler=' + encodeURIComponent(namen.join(';'));
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 15000);
+    let res;
+    try { res = await fetch(url, {signal: ctrl.signal}); } finally { clearTimeout(timer); }
+    const j = JSON.parse(await res.text());
+    if (j.fehler || typeof j.anzahl !== 'number') return 0; // Check nicht verfuegbar -> ohne Warnung speichern
+    return j.anzahl;
+  } catch(e){ return 0; }
+}
 document.getElementById('btnSpeichern').addEventListener('click', async ()=>{
   if (speichereLaeuft) return; // Doppelklick waehrend des Speicherns wird ignoriert
   const btnSpeichern = document.getElementById('btnSpeichern');
@@ -1318,6 +1373,13 @@ document.getElementById('btnSpeichern').addEventListener('click', async ()=>{
     anhaenge: zustand.anhaenge,
     eintragId: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) // gegen Doppeleintraege
   };
+  // Doppelungen vermeiden: vor dem Speichern pruefen, ob Art + Datum + Schueler bereits existieren
+  const kopien = await eintragKopieVorhanden(daten);
+  if (kopien > 0){
+    const okWeiter = confirm('Achtung: Für diese Auswahl (Art, Datum, Schüler) existiert bereits ' + kopien +
+      (kopien === 1 ? ' Eintrag' : ' Einträge') + ' im LogBuch.\nTrotzdem speichern?');
+    if (!okWeiter){ zeigeMeldung('Speichern abgebrochen.'); return; }
+  }
   speichereLaeuft = true;
   btnSpeichern.disabled = true;
   btnSpeichern.textContent = 'Speichere …';
@@ -1572,7 +1634,7 @@ function lepFeldBlock(t){
   const hinweis = el('span', {class:'lep-hinweis', role:'button', tabindex:'0'}, controls);
   const btnVerwerfen = el('button', {type:'button', class:'lep-verwerfen versteckt'}, controls);
   btnVerwerfen.textContent = 'Verwerfen';
-  const kzInp = el('input', {type:'text', class:'lep-kuerzel', maxlength:'4', placeholder:'Kürzel', autocomplete:'off'}, controls);
+  const kzInp = el('input', {type:'text', class:'lep-kuerzel', maxlength:'4', placeholder:'Kürzel', autocomplete:'off', spellcheck:'false'}, controls);
 
   const TEXT_WARTEN = 'Ergänzungen werden nach Eingabe deines Lehrerkürzels gespeichert';
   const TEXT_BEREIT = 'Klick um Ergänzungen zu speichern';
@@ -1614,16 +1676,26 @@ function lepFeldBlock(t){
     const datumStr = String(heute.getDate()).padStart(2,'0') + '.' + String(heute.getMonth()+1).padStart(2,'0') + '.' + heute.getFullYear();
     const tag = ' (' + kz + '_' + datumStr + ')'; // z. B. (HAR_06.11.2026)
     const jobs = [];
+    let uebersprungen = 0; // bereits vorhandene Zeilen (Doppelungen)
     Object.keys(wrap._editors).forEach(feld=>{
       const ed = wrap._editors[feld];
       const zeilen = neuText(ed.ta, ed.alt).split('\n')
         .map(z => z.replace(/^\s*-\s*/, '').trim())
         .filter(z => z.length > 0)
         .map(z => '  - ' + z + tag);
-      if (!zeilen.length) return;
-      jobs.push({ feld: feld, ed: ed, neuerInhalt: (ed.alt ? ed.alt + "\n" : "") + zeilen.join("\n") });
+      // Doppelungen vermeiden: Zeilen, deren Text bereits in der Zelle steht, werden nicht erneut angehaengt
+      const altInhalt = ed.alt || '';
+      const wirklichNeu = zeilen.filter(z => altInhalt.indexOf(z.slice(0, z.length - tag.length).trim()) === -1);
+      uebersprungen += zeilen.length - wirklichNeu.length;
+      if (!wirklichNeu.length) return;
+      jobs.push({ feld: feld, ed: ed, neuerInhalt: (ed.alt ? ed.alt + "\n" : "") + wirklichNeu.join("\n") });
     });
-    if (!jobs.length) return;
+    if (!jobs.length){
+      zeigeMeldung(uebersprungen > 0
+        ? 'Diese Zeile(n) sind bereits gespeichert – nichts wurde doppelt angehängt.'
+        : 'Keine Ergänzung zum Speichern vorhanden.');
+      return;
+    }
     hinweis.style.pointerEvents = 'none';
     try {
       for (const job of jobs){
@@ -1643,7 +1715,8 @@ function lepFeldBlock(t){
         delete wrap._editors[job.feld];
       }
       if (!Object.keys(wrap._editors).length) controls.classList.add('versteckt');
-      zeigeMeldung(jobs.length > 1 ? 'Ergänzungen wurden gespeichert' : 'Ergänzung wurde gespeichert');
+      zeigeMeldung((jobs.length > 1 ? 'Ergänzungen wurden gespeichert' : 'Ergänzung wurde gespeichert') +
+        (uebersprungen > 0 ? ' (' + uebersprungen + ' bereits vorhandene Zeile(n) übersprungen)' : ''));
     } catch(err){
       zeigeMeldung('Fehler beim Speichern: ' + err.message, {fehler:true, dauerhaft:true});
     } finally {
@@ -1692,7 +1765,7 @@ function oeffneLepEditor(wrap, feldDiv, feld, t, update){
   }
   const alt = (t[feld] || '').trim();
   const editor = el('div', {class:'lep-editor'}, feldDiv);
-  const ta = el('textarea', {class:'lep-ta', rows:'5'}, editor);
+  const ta = el('textarea', {class:'lep-ta', rows:'5', spellcheck:'true'}, editor);
   ta.value = ''; // leer starten; gespeicherter Inhalt bleibt oben sichtbar und wird beim Speichern angehängt
   wrap._editors[feld] = { feldDiv: feldDiv, editor: editor, ta: ta, alt: alt };
   ta.addEventListener('input', update);
@@ -1721,9 +1794,9 @@ function zeigeErgebnisse(json, modus){
       (idBlock ? "Keine weiteren Einträge -- Angaben siehe Feld 'Schüler-ID'"
                : 'Keine Einträge gefunden.') + '</div>';
   } else {
-    const karteEintrag = (t)=>{
+    const karteEintrag = (t, parent)=>{
       const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
-      const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, box);
+      const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, parent || box);
       const d = isoZuDeutsch(t.datum);
       karte.innerHTML =
         (t.art === 'Lernentwicklungsplanung'
@@ -1738,26 +1811,43 @@ function zeigeErgebnisse(json, modus){
         (t.anhaenge ? '<div class="eintrag-anhang"><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
       if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t));
     };
+    // Kategorie-Block: rote iOS-Badge mit Anzahl ueber dem Namen, dezent blinkender Pfeil (ein-/ausklappbar)
+    const kategorieBlock = (kat, eintraege, parent)=>{
+      const farbe = (ARTE.find(a=>a.wert===kat)||{}).farbe || '';
+      const gruppe = el('div', {class:'kat-gruppe ' + (FARBE_KLASSE[farbe] || '')}, parent);
+      const kopf = el('div', {class:'kat-kopf2'}, gruppe);
+      const nameZeile = el('div', {class:'kat-namezeile'}, kopf);
+      el('span', {class:'kat-name'}, nameZeile).textContent = kat;
+      const symWrap = el('span', {class:'kat-sym-wrap'}, nameZeile);
+      el('span', {class:'kat-sym'}, symWrap).textContent = KATEGORIE_SYMBOL[kat] || '';
+      const badge = el('span', {class:'kat-badge blinkt-sanft'}, symWrap); // blinkt, solange die Kategorie zugeklappt ist
+      badge.textContent = eintraege.length;
+      const pfeil = el('span', {class:'kat-pfeil', title:'Kategorie ein-/ausklappen'}, nameZeile);
+      pfeil.textContent = '\u25BC'; // nach der Suche zunaechst zugeklappt
+      const body = el('div', {class:'kat-body zugeklappt'}, gruppe);
+      eintraege.forEach(t => karteEintrag(t, body));
+      kopf.addEventListener('click', ()=>{
+        const zugeklappt = body.classList.toggle('zugeklappt');
+        pfeil.textContent = zugeklappt ? '\u25BC' : '\u25B2';
+        badge.classList.toggle('blinkt-sanft', zugeklappt); // Aufklappen beendet das Blinken
+      });
+    };
     if (modus === 'schueler'){
-      // Nach Kategorien geordnet, jeweils mit Anzahl in Klammern: Vorfallmelder, Inklusion, Elterngespraech
+      // Kategorien in einer Zeile, geordnet nach KATEGORIE_REIHENFOLGE
       const gruppen = {};
       treffer.forEach(t=>{ (gruppen[t.art] = gruppen[t.art] || []).push(t); });
+      const zeileKat = el('div', {class:'kat-zeile'}, box);
       KATEGORIE_REIHENFOLGE.forEach(kat=>{
         if (!gruppen[kat] || !gruppen[kat].length) return;
-        const farbe = (ARTE.find(a=>a.wert===kat)||{}).farbe || '';
-        const h = el('div', {class:'kat-kopf ' + (FARBE_KLASSE[farbe] || '')}, box);
-        const n = gruppen[kat].length;
-        h.textContent = kat === 'Lernentwicklungsplanung' ? kat : kat + ' (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
-        gruppen[kat].forEach(karteEintrag);
+        kategorieBlock(kat, gruppen[kat], zeileKat);
       });
     } else {
-      // Bei Art-Suche nach Lernentwicklungsplanung: Überschrift mit Anzahl direkt unter dem PDF-Button
       if (modus === 'art' && ddSuchWert && ddSuchWert.wert()[0] === 'Lernentwicklungsplanung' && treffer.length){
-        const h = el('div', {class:'kat-kopf k-violett'}, box);
-        const n = treffer.length;
-        h.textContent = 'Lernentwicklungsplanungen (' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ')';
+        // Art-Suche LEP: gleicher Kategorie-Block direkt unter dem PDF-Button
+        kategorieBlock('Lernentwicklungsplanung', treffer, el('div', {class:'kat-zeile'}, box));
+      } else {
+        treffer.forEach(t => karteEintrag(t));
       }
-      treffer.forEach(karteEintrag);
     }
   }
   // Schueler-ID
@@ -1792,6 +1882,7 @@ function zeigeErgebnisse(json, modus){
 
 /* ================= Bericht drucken (PDF) ================= */
 const KATEGORIE_REIHENFOLGE = ['Lernentwicklungsplanung', 'Vorfallmelder', 'Inklusion', 'Elterngespräch'];
+const KATEGORIE_SYMBOL = { 'Inklusion':'\u{1F9E9}', 'Vorfallmelder':'\u{1F6A8}', 'Elterngespräch':'\u{1F468}\u200D\u{1F469}\u200D\u{1F467}', 'Lernentwicklungsplanung':'\u{1F4DD}' };
 
 /* Stile des Berichts fuer den eigenstaendigen Tab (iOS) */
 const REPORT_CSS = `
@@ -1922,6 +2013,28 @@ document.getElementById('btnBericht').addEventListener('click', ()=>{
     setTimeout(()=>window.print(), 150); // Druckdialog oeffnet, Ausgabe als PDF moeglich
   }
 });
+
+/* ================= Fusszeile: Version (Datum) und Uhrzeit automatisch ================= */
+function aktualisiereFusszeile(){
+  try {
+    const jetzt = new Date();
+    const d = String(jetzt.getDate()).padStart(2,'0') + '.' + String(jetzt.getMonth()+1).padStart(2,'0') + '.' + jetzt.getFullYear();
+    const z = String(jetzt.getHours()).padStart(2,'0') + ':' + String(jetzt.getMinutes()).padStart(2,'0');
+    const fuss = document.getElementById('fusszeile');
+    fuss.textContent = '\u00A9 LogBuch26 \u00B7 Dipl.-Ing HARBI \u00B7 Version ' + d + ' \u00B7 ' + z + ' Uhr';
+    // Rechtsbuendig unter der Ueberschrift: das letzte Element (Uhrzeit) endet genau unter dem „(g)“
+    const h1 = document.querySelector('#topContent h1');
+    const range = document.createRange();
+    range.selectNodeContents(h1);
+    const rect = range.getBoundingClientRect();
+    const topRect = document.getElementById('topContent').getBoundingClientRect();
+    fuss.style.paddingRight = Math.max(0, Math.round(topRect.right - rect.right)) + 'px';
+  } catch(e) { /* Fusszeile ist optional */ }
+}
+aktualisiereFusszeile();
+setTimeout(aktualisiereFusszeile, 600); // nach dem Laden der Schriften nochmals ausrichten
+window.addEventListener('resize', aktualisiereFusszeile);
+setInterval(aktualisiereFusszeile, 30000); // Uhrzeit/Minuten aktuell halten
 </script>
 </body>
 </html>
