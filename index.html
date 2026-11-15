@@ -283,9 +283,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .kat-badge {
   position: absolute; top: -11px; right: calc(-16px - 1ch); /* 1 Zeichen nach links gerueckt, keine Ueberlappung mit dem Symbol */
   background: #dc2626; color: #fff; border-radius: 999px;
-  min-width: 27px; height: 27px; padding: 0 9px;
+  min-width: 24px; height: 24px; padding: 0 8px; /* -10 % gegenüber 27 px */
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 700; /* +20 % gegenüber 22 px */
+  font-size: 14px; font-weight: 700;
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   pointer-events: none;
 }
@@ -306,6 +306,18 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   animation: lepToggleBlink 1.6s ease-in-out infinite; /* dezent rot umrahmtes Blinken */
 }
 .kat-body.zugeklappt { display: none; }
+
+/* Gesuchter Schuelername im Protokolltext: blinkt und wirkt 10 % größer */
+@keyframes trefferBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.treffer-markierung {
+  font-size: 1.1em; /* +10 % gegenüber dem übrigen Text */
+  font-weight: bold;
+  color: #b91c1c;
+  animation: trefferBlink 1.2s ease-in-out infinite;
+}
 
 .kat-kopf { font-size: 15px; font-weight: bold; margin: 12px 0 8px 0; padding-bottom: 3px; border-bottom: 1.5px solid #c8d4e0; }
 .kat-kopf.k-gruen { color: #15803d; }
@@ -1794,6 +1806,19 @@ function zeigeErgebnisse(json, modus){
       (idBlock ? "Keine weiteren Einträge -- Angaben siehe Feld 'Schüler-ID'"
                : 'Keine Einträge gefunden.') + '</div>';
   } else {
+    // Gesuchter Schuelername (voller Name und Vorname) wird im Protokolltext markiert
+    const suchName = (modus === 'schueler' && ddSuchWert) ? (ddSuchWert.wert()[0] || '') : '';
+    const escRx = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const markiereTreffer = (text)=>{
+      let s = String(text || '').replace(/</g, '&lt;');
+      if (!suchName) return s;
+      const teile = suchName.split(',');
+      const vorname = teile.length > 1 ? teile[1].trim() : '';
+      const muster = [escRx(suchName)];
+      if (vorname && vorname !== suchName) muster.push(escRx(vorname));
+      const rx = new RegExp('(' + muster.join('|') + ')', 'g');
+      return s.replace(rx, '<span class="treffer-markierung">$1</span>');
+    };
     const karteEintrag = (t, parent)=>{
       const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
       const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, parent || box);
@@ -1807,7 +1832,7 @@ function zeigeErgebnisse(json, modus){
             '<div>' + d + '</div>' +
             '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
               (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>') +
-        (t.art !== 'Lernentwicklungsplanung' ? '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' : '') +
+        (t.art !== 'Lernentwicklungsplanung' ? '<div>' + markiereTreffer(t.nachricht) + '</div>' : '') +
         (t.anhaenge ? '<div class="eintrag-anhang"><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
       if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t));
     };
@@ -1820,7 +1845,7 @@ function zeigeErgebnisse(json, modus){
       el('span', {class:'kat-name'}, nameZeile).textContent = kat;
       const symWrap = el('span', {class:'kat-sym-wrap'}, nameZeile);
       el('span', {class:'kat-sym'}, symWrap).textContent = KATEGORIE_SYMBOL[kat] || '';
-      const badge = el('span', {class:'kat-badge blinkt-sanft'}, symWrap); // blinkt, solange die Kategorie zugeklappt ist
+      const badge = el('span', {class:'kat-badge blinkt-sanft', style:'background:' + (BADGE_FARBE[farbe] || '#dc2626')}, symWrap); // Farbe des Kategorienamens, blinkt nur zugeklappt
       badge.textContent = eintraege.length;
       const pfeil = el('span', {class:'kat-pfeil', title:'Kategorie ein-/ausklappen'}, nameZeile);
       pfeil.textContent = '\u25BC'; // nach der Suche zunaechst zugeklappt
@@ -1842,11 +1867,9 @@ function zeigeErgebnisse(json, modus){
         kategorieBlock(kat, gruppen[kat], zeileKat);
       });
     } else {
-      if (modus === 'art' && ddSuchWert && ddSuchWert.wert()[0] === 'Lernentwicklungsplanung' && treffer.length){
-        // Art-Suche LEP: gleicher Kategorie-Block direkt unter dem PDF-Button
-        kategorieBlock('Lernentwicklungsplanung', treffer, el('div', {class:'kat-zeile'}, box));
-      } else {
-        treffer.forEach(t => karteEintrag(t));
+      // Art-Suche: gleiche Darstellung wie Schuelersuche (Kategorie-Block mit Badge + Pfeil)
+      if (ddSuchWert && treffer.length){
+        kategorieBlock(ddSuchWert.wert()[0], treffer, el('div', {class:'kat-zeile'}, box));
       }
     }
   }
@@ -1883,6 +1906,7 @@ function zeigeErgebnisse(json, modus){
 /* ================= Bericht drucken (PDF) ================= */
 const KATEGORIE_REIHENFOLGE = ['Lernentwicklungsplanung', 'Vorfallmelder', 'Inklusion', 'Elterngespräch'];
 const KATEGORIE_SYMBOL = { 'Inklusion':'\u{1F9E9}', 'Vorfallmelder':'\u{1F6A8}', 'Elterngespräch':'\u{1F468}\u200D\u{1F469}\u200D\u{1F467}', 'Lernentwicklungsplanung':'\u{1F4DD}' };
+const BADGE_FARBE = { gruen:'#16a34a', rot:'#dc2626', gelb:'#eab308', violett:'#7c3aed', blau:'#2563eb' };
 
 /* Stile des Berichts fuer den eigenstaendigen Tab (iOS) */
 const REPORT_CSS = `
@@ -2014,14 +2038,12 @@ document.getElementById('btnBericht').addEventListener('click', ()=>{
   }
 });
 
-/* ================= Fusszeile: Version (Datum) und Uhrzeit automatisch ================= */
+/* ================= Fusszeile: Versions-Kennung (fest, wird beim Anpassen der Datei gesetzt) ================= */
+const VERSION_STAND = '15.11.26 \u00B7 09:29'; /* Format: TT.MM.JJ \u00B7 HH:MM */
 function aktualisiereFusszeile(){
   try {
-    const jetzt = new Date();
-    const d = String(jetzt.getDate()).padStart(2,'0') + '.' + String(jetzt.getMonth()+1).padStart(2,'0') + '.' + jetzt.getFullYear();
-    const z = String(jetzt.getHours()).padStart(2,'0') + ':' + String(jetzt.getMinutes()).padStart(2,'0');
     const fuss = document.getElementById('fusszeile');
-    fuss.textContent = '\u00A9 LogBuch26 \u00B7 Dipl.-Ing HARBI \u00B7 Version ' + d + ' \u00B7 ' + z + ' Uhr';
+    fuss.textContent = '\u00A9 LogBuch26 \u00B7 Dipl.-Ing HARBI \u00B7 Ver_' + VERSION_STAND;
     // Rechtsbuendig unter der Ueberschrift: das letzte Element (Uhrzeit) endet genau unter dem „(g)“
     const h1 = document.querySelector('#topContent h1');
     const range = document.createRange();
@@ -2034,7 +2056,6 @@ function aktualisiereFusszeile(){
 aktualisiereFusszeile();
 setTimeout(aktualisiereFusszeile, 600); // nach dem Laden der Schriften nochmals ausrichten
 window.addEventListener('resize', aktualisiereFusszeile);
-setInterval(aktualisiereFusszeile, 30000); // Uhrzeit/Minuten aktuell halten
 </script>
 </body>
 </html>
