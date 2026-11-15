@@ -1622,24 +1622,37 @@ document.getElementById('btnSuchen').addEventListener('click', async ()=>{
 });
 
 /* --- LEP: klickbare Felder (ein-/ausklappbar) + gemeinsame Leiste --- */
-/* LEP-Inhalt zeilenweise aufbauen; Zeilen, die mit "-" beginnen, erhalten einen hängenden Einzug */
-function lepInhaltSetzen(inhalt, text){
+/* Text escapen und – falls ein Suchmuster vorliegt – Treffer markieren */
+function markiereHtml(s, rx){
+  s = String(s || '').replace(/</g, '&lt;');
+  return rx ? s.replace(rx, '<span class="treffer-markierung">$1</span>') : s;
+}
+
+/* LEP-Inhalt zeilenweise aufbauen; Zeilen, die mit "-" beginnen, erhalten einen hängenden Einzug.
+   rx (optional): markiert den gesuchten Schuelernamen im Text. */
+function lepInhaltSetzen(inhalt, text, rx){
   inhalt.innerHTML = '';
   const zeilen = String(text || '').trim().split('\n');
   if (!zeilen[0]){ inhalt.textContent = '\u2013'; return; }
   zeilen.forEach(z=>{
     if (z.trim().startsWith('-')){
       const zDiv = el('div', {class:'lep-zeile'}, inhalt);
-      zDiv.textContent = z;
+      if (rx) zDiv.innerHTML = markiereHtml(z, rx); else zDiv.textContent = z;
     } else {
-      inhalt.appendChild(document.createTextNode(z + '\n'));
+      if (rx){
+        const span = el('span', {}, inhalt);
+        span.innerHTML = markiereHtml(z, rx) + '\n';
+      } else {
+        inhalt.appendChild(document.createTextNode(z + '\n'));
+      }
     }
   });
 }
 
-function lepFeldBlock(t){
+function lepFeldBlock(t, trefferRx){
   const wrap = el('div', {class:'lep-block'}, null);
   wrap._editors = {};
+  wrap._rx = trefferRx || null; // Markierung des gesuchten Schuelernamens
 
   // Gemeinsame Leiste (unten mittig, nur EINMAL): Hinweis/Speichern + Kürzel + Verwerfen + Upload
   const controls = el('div', {class:'lep-controls versteckt'}, wrap);
@@ -1722,7 +1735,7 @@ function lepFeldBlock(t){
         catch(e){ throw new Error('Das Script hat keine gültige Antwort gesendet. Bitte Code.gs prüfen (Aktion „zelleAktualisieren").'); }
         if (json.fehler) throw new Error(json.fehler);
         t[job.feld] = job.neuerInhalt; // auch für den Druckbericht aktualisieren
-        lepInhaltSetzen(job.ed.feldDiv.querySelector('.lep-inhalt'), job.neuerInhalt);
+        lepInhaltSetzen(job.ed.feldDiv.querySelector('.lep-inhalt'), job.neuerInhalt, wrap._rx);
         job.ed.editor.remove();
         delete wrap._editors[job.feld];
       }
@@ -1743,7 +1756,7 @@ function lepFeldBlock(t){
     const toggle = el('span', {class:'lep-toggle', title:'Feld aufklappen/zuklappen'}, feldDiv);
     toggle.textContent = '\u25BC'; // dunkelrotes Dreieck nach unten = aufklappen
     const inhalt = el('span', {class:'lep-inhalt'}, feldDiv);
-    lepInhaltSetzen(inhalt, t[pair[1]]); // kursiv & ausgegraut, "-"-Zeilen mit hängendem Einzug
+    lepInhaltSetzen(inhalt, t[pair[1]], wrap._rx); // kursiv & ausgegraut, "-"-Zeilen mit hängendem Einzug, Treffer markiert
     const schliessen = ()=>{
       if (!wrap._editors[pair[1]]) return;
       wrap._editors[pair[1]].editor.remove();
@@ -1809,16 +1822,15 @@ function zeigeErgebnisse(json, modus){
     // Gesuchter Schuelername (voller Name und Vorname) wird im Protokolltext markiert
     const suchName = (modus === 'schueler' && ddSuchWert) ? (ddSuchWert.wert()[0] || '') : '';
     const escRx = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const markiereTreffer = (text)=>{
-      let s = String(text || '').replace(/</g, '&lt;');
-      if (!suchName) return s;
+    let trefferRx = null;
+    if (suchName){
       const teile = suchName.split(',');
       const vorname = teile.length > 1 ? teile[1].trim() : '';
       const muster = [escRx(suchName)];
       if (vorname && vorname !== suchName) muster.push(escRx(vorname));
-      const rx = new RegExp('(' + muster.join('|') + ')', 'g');
-      return s.replace(rx, '<span class="treffer-markierung">$1</span>');
-    };
+      trefferRx = new RegExp('(' + muster.join('|') + ')', 'g');
+    }
+    const markiereTreffer = (text)=> markiereHtml(text, trefferRx);
     const karteEintrag = (t, parent)=>{
       const farbe = (ARTE.find(a=>a.wert===t.art)||{}).farbe || '';
       const karte = el('div', {class:'eintrag '+(FARBE_KLASSE[farbe]||'')}, parent || box);
@@ -1832,9 +1844,10 @@ function zeigeErgebnisse(json, modus){
             '<div>' + d + '</div>' +
             '<div>' + (t.lehrerkuerzel||'') + ' (' + (t.schulfach||'') + ') (' + (t.klasse||'') + ')' +
               (modus==='art' && t.schueler ? ' – ' + t.schueler : '') + '</div>') +
-        (t.art !== 'Lernentwicklungsplanung' ? '<div>' + markiereTreffer(t.nachricht) + '</div>' : '') +
+        (t.art === 'Inklusion' ? '<div>' + markiereTreffer(t.nachricht) + '</div>'
+          : t.art !== 'Lernentwicklungsplanung' ? '<div>' + (t.nachricht||'').replace(/</g,'&lt;') + '</div>' : '') +
         (t.anhaenge ? '<div class="eintrag-anhang"><a href="' + t.anhaenge + '" target="_blank" rel="noopener">Dateianhang</a></div>' : '');
-      if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t));
+      if (t.art === 'Lernentwicklungsplanung') karte.appendChild(lepFeldBlock(t, null)); // Markierung nur in Inklusion
     };
     // Kategorie-Block: rote iOS-Badge mit Anzahl ueber dem Namen, dezent blinkender Pfeil (ein-/ausklappbar)
     const kategorieBlock = (kat, eintraege, parent)=>{
